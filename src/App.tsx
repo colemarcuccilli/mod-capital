@@ -42,7 +42,7 @@ const App: React.FC = () => {
   }, []);
   
   return (
-    <Router>
+    <Router basename="/mod-capital">
       <ScrollToTop />
       <MainLayout>
         <Routes>
