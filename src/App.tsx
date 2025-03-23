@@ -1,26 +1,67 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import MainLayout from './layouts/MainLayout';
+import Home from './pages/Home';
+import DoubleClose from './pages/DoubleClose';
+import EMD from './pages/EMD';
+import Gap from './pages/Gap';
+import PrivateMoney from './pages/PrivateMoney';
+import Contact from './pages/Contact';
+import ScrollToTop from './utils/ScrollToTop';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 
-function App() {
+// Register GSAP plugins globally
+gsap.registerPlugin(
+  ScrollTrigger,
+  ScrollToPlugin
+);
+
+const App: React.FC = () => {
+  useEffect(() => {
+    // Set default GSAP settings
+    gsap.defaults({
+      ease: 'power3.out',
+      duration: 1
+    });
+    
+    // Enable ScrollTrigger on mobile (it's disabled by default)
+    ScrollTrigger.config({
+      ignoreMobileResize: true
+    });
+    
+    return () => {
+      // Clean up all GSAP animations on unmount
+      const allAnimations = gsap.globalTimeline.getChildren();
+      allAnimations.forEach(animation => animation.kill());
+      
+      // Kill all ScrollTriggers
+      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+    };
+  }, []);
+  
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <ScrollToTop />
+      <MainLayout>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/double-close" element={<DoubleClose />} />
+          <Route path="/emd" element={<EMD />} />
+          <Route path="/gap" element={<Gap />} />
+          <Route path="/private-money" element={<PrivateMoney />} />
+          <Route path="/contact" element={<Contact />} />
+          
+          {/* Additional pages */}
+          {/* <Route path="/blog" element={<Blog />} /> */}
+          
+          {/* 404 Page */}
+          {/* <Route path="*" element={<NotFound />} /> */}
+        </Routes>
+      </MainLayout>
+    </Router>
   );
-}
+};
 
 export default App;

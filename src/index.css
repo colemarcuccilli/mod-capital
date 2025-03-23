@@ -1,13 +1,82 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@500;600;700;800&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Base styles */
+
+@layer base {
+    html {
+        @apply font-sans;
+    }
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        @apply font-bold font-montserrat;
+    }
+    body {
+        @apply text-secondary bg-background;
+    }
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+
+/* Component styles */
+
+@layer components {
+    .font-heading {
+        @apply font-montserrat font-bold;
+    }
+    .container {
+        @apply px-4 mx-auto max-w-7xl;
+    }
+    .btn {
+        @apply py-2 px-4 rounded font-medium transition-colors duration-200;
+    }
+    .btn-primary {
+        @apply bg-primary text-white;
+    }
+    .btn-primary:hover {
+        @apply bg-primary/90;
+    }
+    .btn-secondary {
+        @apply bg-white text-primary border border-primary;
+    }
+    .btn-secondary:hover {
+        @apply bg-primary/5;
+    }
+    .card {
+        @apply bg-white rounded-lg shadow-md p-6;
+    }
+    .section {
+        @apply py-12;
+    }
+    .section-md {
+        @apply py-24;
+    }
+}
+
+
+/* Animation utilities */
+
+.fade-in {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.fade-in.visible {
+    opacity: 1;
+}
+
+.slide-up {
+    transform: translateY(20px);
+    opacity: 0;
+    transition: transform 0.5s ease-out, opacity 0.5s ease-out;
+}
+
+.slide-up.visible {
+    transform: translateY(0);
+    opacity: 1;
 }
