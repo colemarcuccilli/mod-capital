@@ -41,22 +41,22 @@ const HowItWorks: React.FC = () => {
     {
       icon: <IconWrapper name="FiFileText" size={24} className="text-white" />,
       title: "Request Funding",
-      description: "Submit your funding request"
+      description: "Submit your funding request through our simple form"
     },
     {
       icon: <IconWrapper name="FiCheckSquare" size={24} className="text-white" />,
-      title: "Agreement on Terms",
-      description: "Come to an agreement on terms"
+      title: "Funding Terms",
+      description: "We'll create a funding agreement with clear terms"
     },
     {
       icon: <IconWrapper name="FiLifeBuoy" size={24} className="text-white" />,
-      title: "Due Diligence",
-      description: "We'll verify all the details"
+      title: "Funding Review",
+      description: "Our team will review and validate your funding needs"
     },
     {
       icon: <IconWrapper name="FiDollarSign" size={24} className="text-white" />,
-      title: "Get Funded",
-      description: "Receive your funding"
+      title: "Fast Funding",
+      description: "Receive your funding within 48 hours or less"
     }
   ];
   
@@ -244,9 +244,9 @@ const HowItWorks: React.FC = () => {
       <div className="container relative z-10">
         <h2 
           ref={titleRef}
-          className="text-3xl md:text-4xl font-bold text-center mb-10"
+          className="text-3xl md:text-4xl font-bold text-center mb-10 text-black"
         >
-          How It <span className="text-accent px-2 py-1 bg-gradient-to-r from-accent/20 to-accent/20 bg-no-repeat bg-left-bottom">Works</span>
+          How <span className="text-accent">Funding</span> Works
         </h2>
         
         {/* Mobile View (Interactive expandable steps) */}
@@ -262,7 +262,7 @@ const HowItWorks: React.FC = () => {
                   <div className="step-number flex-shrink-0 mr-3 text-primary text-xl font-bold">
                     {index + 1}
                   </div>
-                  <h3 className="text-lg font-bold text-primary">{step.title}</h3>
+                  <h3 className="text-lg font-bold text-black">{step.title}</h3>
                 </div>
                 <div className="expand-icon text-primary">
                   <IconWrapper name="FiArrowDown" size={20} />
@@ -305,7 +305,7 @@ const HowItWorks: React.FC = () => {
                 
                 {/* Content */}
                 <div className="text-center px-4">
-                  <h3 className="text-lg font-bold text-primary mb-1">{step.title}</h3>
+                  <h3 className="text-lg font-bold text-black mb-1">{step.title}</h3>
                   <p className="text-gray-600 text-sm">{step.description}</p>
                 </div>
               </div>
@@ -321,9 +321,9 @@ const HowItWorks: React.FC = () => {
             >
               <path
                 ref={pathRef}
-                d="M0,60 C100,30 150,90 200,60 C250,30 300,90 350,60 C400,30 450,90 500,60 C550,30 600,90 650,60 C700,30 750,90 800,60 C850,30 900,90 950,60 C1000,30 1050,90 1100,60 C1150,30 1200,90 1250,60 C1300,30 1350,90 1400,60 C1450,30 1500,90 1550,60 C1600,30"
+                d="M0,60 C100,30 150,90 200,60 C250,30 300,90 350,60 C400,30 450,90 500,60 C550,30 600,90 650,60 C700,30 750,90 800,60 C850,30 900,90 950,60 C1000,30 1050,90 1100,60 C1150,30 1200,90 1250,60 C1300,30 1350,90 1400,60 C1450,30 1500,90 1550,60 C1600,30 1600,60"
                 fill="none"
-                stroke="#3B82F6"
+                stroke="#FF0000"
                 strokeWidth="4"
                 strokeLinecap="round"
               />

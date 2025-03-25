@@ -188,24 +188,29 @@ const FAQs: React.FC = () => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     
     const ctx = gsap.context(() => {
+      // Don't run animations if user prefers reduced motion
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      
       // Create floating particle effect for background (only for desktop)
       if (!prefersReducedMotion && window.innerWidth >= 768) {
         const particles = gsap.utils.toArray<HTMLElement>('.particle');
         particles.forEach((particle) => {
-          const xRange = gsap.utils.random(10, 30);
-          const yRange = gsap.utils.random(10, 30);
-          const rotRange = gsap.utils.random(10, 90);
-          const duration = gsap.utils.random(5, 10);
-          
-          gsap.to(particle, {
-            x: `+=${xRange}`,
-            y: `+=${yRange}`,
-            rotation: rotRange,
-            duration: duration,
-            repeat: -1,
-            yoyo: true,
-            ease: "sine.inOut"
-          });
+          if (particle) {
+            const xRange = gsap.utils.random(10, 30);
+            const yRange = gsap.utils.random(10, 30);
+            const rotRange = gsap.utils.random(10, 90);
+            const duration = gsap.utils.random(5, 10);
+            
+            gsap.to(particle, {
+              x: `+=${xRange}`,
+              y: `+=${yRange}`,
+              rotation: rotRange,
+              duration: duration,
+              repeat: -1,
+              yoyo: true,
+              ease: "sine.inOut"
+            });
+          }
         });
       }
       
@@ -229,13 +234,11 @@ const FAQs: React.FC = () => {
         if (titleSpan) {
           gsap.fromTo(titleSpan, 
             { 
-              backgroundSize: "0% 100%",
               y: 40,
               opacity: 0,
               rotation: 5
             },
             {
-              backgroundSize: "100% 100%",
               y: 0,
               opacity: 1,
               rotation: 0,
@@ -344,7 +347,7 @@ const FAQs: React.FC = () => {
             style={{
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
-              backgroundColor: `rgba(${Math.floor(Math.random() * 100) + 155}, ${Math.floor(Math.random() * 100) + 155}, ${Math.floor(Math.random() * 100) + 155}, 0.1)`,
+              backgroundColor: `rgba(${Math.floor(Math.random() * 100) + 155}, 0, 0, 0.1)`,
               transform: `scale(${Math.random() * 2 + 0.5})`,
               opacity: Math.random() * 0.5 + 0.1
             }}
@@ -357,7 +360,7 @@ const FAQs: React.FC = () => {
         ref={overlayRef}
         className="absolute inset-0 opacity-0 pointer-events-none"
         style={{
-          background: 'radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.1) 0%, rgba(16, 24, 39, 0.05) 100%)',
+          background: 'radial-gradient(circle at 50% 50%, rgba(220, 38, 38, 0.1) 0%, rgba(16, 24, 39, 0.05) 100%)',
         }}
       />
       
@@ -375,14 +378,14 @@ const FAQs: React.FC = () => {
           </div>
           <h2 
             ref={titleRef}
-            className="text-3xl md:text-4xl font-bold mb-2"
+            className="text-3xl md:text-4xl font-bold mb-2 text-black"
           >
-            <span className="bg-gradient-to-r from-accent/30 to-accent/30 bg-[length:0%_40%] bg-bottom bg-no-repeat px-2">
-              Frequently Asked Questions
+            <span className="text-accent">
+              Funding Questions
             </span>
           </h2>
           <p className="text-gray-600 max-w-2xl mx-auto mb-12">
-            Get the answers to the most common questions about our funding solutions.
+            Get answers to the most common questions about our funding solutions and process.
           </p>
         </div>
         
@@ -395,7 +398,7 @@ const FAQs: React.FC = () => {
               className="faq-item backdrop-blur-sm bg-white/85 rounded-xl shadow-md p-5 mb-4 cursor-pointer hover:shadow-lg transition-all duration-300 will-change-transform"
             >
               <div className="flex items-center justify-between">
-                <h3 className="text-lg md:text-xl font-semibold text-primary pr-4">
+                <h3 className="text-lg md:text-xl font-semibold text-black pr-4">
                   {faq.question}
                 </h3>
                 <div className="relative flex-shrink-0 w-6 h-6">

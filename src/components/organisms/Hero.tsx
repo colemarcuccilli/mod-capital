@@ -151,7 +151,7 @@ const Hero: React.FC<HeroProps> = ({
           <div className="absolute inset-0 bg-primary/60"></div>
         </div>
       ) : (
-        <div className="absolute inset-0 bg-gradient-to-br from-primary to-primary-dark"></div>
+        <div className="absolute inset-0 bg-white"></div>
       )}
       
       {/* Content */}
@@ -159,14 +159,14 @@ const Hero: React.FC<HeroProps> = ({
         <div className="max-w-4xl mx-auto text-center">
           <h1 
             ref={titleRef}
-            className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-white"
+            className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-black"
           >
-            Get <span ref={rotatingTextRef} className="text-accent"></span>
+            <span ref={rotatingTextRef} className="text-black"></span> <span className="text-black inline-block">|</span> <span className="text-gray-500 inline-block">Funding</span>
           </h1>
           
           <p 
             ref={subtitleRef}
-            className="text-xl md:text-2xl text-white/90 mb-10"
+            className="text-xl md:text-2xl text-gray-600 mb-10"
           >
             {subtitle}
           </p>

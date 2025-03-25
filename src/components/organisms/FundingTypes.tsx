@@ -34,32 +34,32 @@ const FundingTypes: React.FC = () => {
   
   const fundingTypes: FundingType[] = [
     {
-      title: "Double Close",
+      title: "Double Close Funding",
       description: "Fund two transactions seamlessly with our double closing solutions.",
       icon: "🏠🔄🏠",
       path: "/double-close",
-      color: "from-blue-500 to-blue-700"
+      color: "from-red-500 to-red-700"
     },
     {
-      title: "EMD",
+      title: "EMD Funding",
       description: "Secure your real estate deals with earnest money deposit funding.",
       icon: "💰🔒",
       path: "/emd",
-      color: "from-green-500 to-green-700"
+      color: "from-red-400 to-red-600"
     },
     {
-      title: "Gap",
+      title: "Gap Funding",
       description: "Bridge the gap in your real estate financing with flexible terms.",
       icon: "🌉💵",
       path: "/gap",
-      color: "from-purple-500 to-purple-700"
+      color: "from-red-600 to-red-800"
     },
     {
-      title: "Private Money Loans",
+      title: "Private Money Funding",
       description: "Access our network of private lenders for your real estate projects.",
       icon: "🏦🤝",
       path: "/private-money",
-      color: "from-orange-500 to-orange-700"
+      color: "from-red-500 to-red-700"
     }
   ];
   
@@ -214,9 +214,9 @@ const FundingTypes: React.FC = () => {
       <div className="container relative z-10">
         <h2 
           ref={titleRef}
-          className="text-3xl md:text-4xl font-bold text-center mb-10"
+          className="text-3xl md:text-4xl font-bold text-center mb-10 text-black"
         >
-          Our <span className="text-accent bg-gradient-to-r from-accent/20 to-accent/20 bg-[length:100%_40%] bg-bottom bg-no-repeat px-2">Funding</span> Solutions
+          Our <span className="text-accent">Funding</span> Solutions
         </h2>
         
         <div 
@@ -235,14 +235,14 @@ const FundingTypes: React.FC = () => {
               {/* Front content */}
               <div className="card-front-content absolute inset-0 p-5 flex flex-col items-center justify-center text-center z-10">
                 <div className="card-icon text-4xl mb-3">{type.icon}</div>
-                <h3 className="card-title text-xl font-bold mb-2 text-primary">{type.title}</h3>
+                <h3 className="card-title text-xl font-bold mb-2 text-black">{type.title}</h3>
                 <p className="card-desc text-sm text-gray-600">{type.description}</p>
               </div>
               
               {/* Back content */}
               <div className="card-back-content absolute inset-0 p-5 flex flex-col items-center justify-center text-center bg-white z-10">
                 <h3 className="text-xl font-bold mb-3 text-accent">{type.title}</h3>
-                <p className="text-sm mb-4">{type.description}</p>
+                <p className="text-sm mb-4 text-gray-600">{type.description}</p>
                 <Link 
                   to={type.path}
                   className="card-btn flex items-center justify-center space-x-2 bg-accent text-white py-2 px-4 rounded-lg hover:bg-accent/90 transition-colors"
