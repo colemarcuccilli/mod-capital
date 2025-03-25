@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import MainLayout from './layouts/MainLayout';
 import Home from './pages/Home';
@@ -8,6 +8,7 @@ import Gap from './pages/Gap';
 import PrivateMoney from './pages/PrivateMoney';
 import Contact from './pages/Contact';
 import ScrollToTop from './utils/ScrollToTop';
+import IntroAnimation from './components/organisms/IntroAnimation';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
@@ -19,6 +20,9 @@ gsap.registerPlugin(
 );
 
 const App: React.FC = () => {
+  const [showIntro, setShowIntro] = useState(true);
+  const [appLoaded, setAppLoaded] = useState(false);
+
   useEffect(() => {
     // Set default GSAP settings
     gsap.defaults({
@@ -30,6 +34,9 @@ const App: React.FC = () => {
     ScrollTrigger.config({
       ignoreMobileResize: true
     });
+
+    // Set app as loaded
+    setAppLoaded(true);
     
     return () => {
       // Clean up all GSAP animations on unmount
@@ -41,26 +48,37 @@ const App: React.FC = () => {
     };
   }, []);
   
+  const handleIntroComplete = () => {
+    setShowIntro(false);
+  };
+  
   return (
-    <Router basename="/mod-capital">
-      <ScrollToTop />
-      <MainLayout>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/double-close" element={<DoubleClose />} />
-          <Route path="/emd" element={<EMD />} />
-          <Route path="/gap" element={<Gap />} />
-          <Route path="/private-money" element={<PrivateMoney />} />
-          <Route path="/contact" element={<Contact />} />
-          
-          {/* Additional pages */}
-          {/* <Route path="/blog" element={<Blog />} /> */}
-          
-          {/* 404 Page */}
-          {/* <Route path="*" element={<NotFound />} /> */}
-        </Routes>
-      </MainLayout>
-    </Router>
+    <>
+      {/* Show intro animation on initial page load */}
+      {appLoaded && showIntro && (
+        <IntroAnimation onComplete={handleIntroComplete} />
+      )}
+      
+      <Router basename="/mod-capital">
+        <ScrollToTop />
+        <MainLayout>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/double-close" element={<DoubleClose />} />
+            <Route path="/emd" element={<EMD />} />
+            <Route path="/gap" element={<Gap />} />
+            <Route path="/private-money" element={<PrivateMoney />} />
+            <Route path="/contact" element={<Contact />} />
+            
+            {/* Additional pages */}
+            {/* <Route path="/blog" element={<Blog />} /> */}
+            
+            {/* 404 Page */}
+            {/* <Route path="*" element={<NotFound />} /> */}
+          </Routes>
+        </MainLayout>
+      </Router>
+    </>
   );
 };
 

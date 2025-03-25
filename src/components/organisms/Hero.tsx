@@ -32,7 +32,7 @@ const Hero: React.FC<HeroProps> = ({
   const scrollButtonRef = useRef<HTMLButtonElement>(null);
   
   // Loan types for rotation
-  const loanTypes = ["Double Close", "EMD", "Gap", "Private Money"];
+  const loanTypes = ["EMD Funding", "Double Close Funding", "Gap Funding", "Private Money Loan"];
   
   // Handle scroll button click
   const handleScrollClick = () => {
@@ -161,7 +161,7 @@ const Hero: React.FC<HeroProps> = ({
             ref={titleRef}
             className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-black"
           >
-            <span ref={rotatingTextRef} className="text-black"></span> <span className="text-black inline-block">|</span> <span className="text-gray-500 inline-block">Funding</span>
+            <span ref={rotatingTextRef} className="text-black"></span>
           </h1>
           
           <p 
