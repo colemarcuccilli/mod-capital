@@ -81,8 +81,8 @@ const Navigation: React.FC<NavigationProps> = ({ className = '' }) => {
   
   const navLinks = [
     { name: 'Home', path: '/' },
-    { name: 'About Us', path: '/about' },
-    { name: 'Contact', path: '/contact' }
+    { name: 'Referrals', path: '/referrals' },
+    { name: 'Contact Us', path: '/contact' }
   ];
   
   // Element variables for the icons
@@ -114,7 +114,7 @@ const Navigation: React.FC<NavigationProps> = ({ className = '' }) => {
             className="flex items-center space-x-1 text-gray-700 hover:text-accent transition-colors duration-300"
             onClick={() => setFundingDropdownOpen(!fundingDropdownOpen)}
           >
-            <span>Funding Types</span>
+            <span>Get Funding</span>
             {chevronDownIcon}
           </button>
           
@@ -173,7 +173,7 @@ const Navigation: React.FC<NavigationProps> = ({ className = '' }) => {
               className="flex items-center justify-between w-full px-4 py-2 hover:bg-gray-100 transition-colors duration-200"
               onClick={() => setFundingDropdownOpen(!fundingDropdownOpen)}
             >
-              <span>Funding Types</span>
+              <span>Get Funding</span>
               {chevronDownIcon}
             </button>
             

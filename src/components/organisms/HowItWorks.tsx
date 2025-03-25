@@ -1,12 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
-import { FiUserPlus, FiFileText, FiUsers, FiCheckCircle } from 'react-icons/fi';
+import { FiFileText, FiCheckSquare, FiLifeBuoy, FiDollarSign, FiArrowDown, FiArrowUp } from 'react-icons/fi';
 import IconWrapper from '../atoms/IconWrapper';
 
 // Register GSAP plugins
-gsap.registerPlugin(ScrollTrigger, MotionPathPlugin);
+gsap.registerPlugin(ScrollTrigger);
 
 interface Step {
   icon: React.ReactNode;
@@ -18,65 +17,211 @@ const HowItWorks: React.FC = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const pathRef = useRef<SVGPathElement>(null);
+  const stepsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const mobileStepsRef = useRef<(HTMLDivElement | null)[]>([]);
+  
+  // Reset refs
+  stepsRef.current = [];
+  mobileStepsRef.current = [];
+  
+  // Add to refs
+  const addToStepsRef = (el: HTMLDivElement | null) => {
+    if (el && !stepsRef.current.includes(el)) {
+      stepsRef.current.push(el);
+    }
+  };
+  
+  const addToMobileStepsRef = (el: HTMLDivElement | null) => {
+    if (el && !mobileStepsRef.current.includes(el)) {
+      mobileStepsRef.current.push(el);
+    }
+  };
   
   const steps: Step[] = [
     {
-      icon: <IconWrapper name="FiUserPlus" size={28} className="text-white" />,
-      title: "Sign up or contact us",
-      description: "Create an account or reach out to our team to get started with your funding journey."
+      icon: <IconWrapper name="FiFileText" size={24} className="text-white" />,
+      title: "Request Funding",
+      description: "Submit your funding request"
     },
     {
-      icon: <IconWrapper name="FiFileText" size={28} className="text-white" />,
-      title: "Share your funding needs",
-      description: "Tell us about your project, required funding amount, timeline, and any specific requirements."
+      icon: <IconWrapper name="FiCheckSquare" size={24} className="text-white" />,
+      title: "Agreement on Terms",
+      description: "Come to an agreement on terms"
     },
     {
-      icon: <IconWrapper name="FiUsers" size={28} className="text-white" />,
-      title: "Get matched with lenders",
-      description: "We'll connect you with the most suitable lenders from our vetted network for your specific needs."
+      icon: <IconWrapper name="FiLifeBuoy" size={24} className="text-white" />,
+      title: "Due Diligence",
+      description: "We'll verify all the details"
     },
     {
-      icon: <IconWrapper name="FiCheckCircle" size={28} className="text-white" />,
-      title: "Negotiate and close the deal",
-      description: "Finalize terms with your chosen lender and complete the transaction with our support."
+      icon: <IconWrapper name="FiDollarSign" size={24} className="text-white" />,
+      title: "Get Funded",
+      description: "Receive your funding"
     }
   ];
+  
+  // Toggle mobile step expansion
+  const toggleMobileStep = (index: number) => {
+    const step = mobileStepsRef.current[index];
+    if (!step) return;
+    
+    const details = step.querySelector('.step-details');
+    const isExpanded = step.classList.contains('expanded');
+    const icon = step.querySelector('.expand-icon');
+    
+    if (!details || !icon) return;
+    
+    if (isExpanded) {
+      // Collapse
+      gsap.to(details, {
+        height: 0,
+        opacity: 0,
+        duration: 0.3,
+        ease: "power2.inOut"
+      });
+      gsap.to(icon, { rotation: 0, duration: 0.3 });
+      step.classList.remove('expanded');
+    } else {
+      // Expand
+      gsap.to(details, {
+        height: "auto",
+        opacity: 1,
+        duration: 0.3,
+        ease: "power2.inOut"
+      });
+      gsap.to(icon, { rotation: 180, duration: 0.3 });
+      step.classList.add('expanded');
+    }
+  };
   
   useEffect(() => {
     const ctx = gsap.context(() => {
       // Title animation
       if (titleRef.current) {
-        gsap.to(titleRef.current.querySelector('span'), {
-          backgroundSize: "100% 100%",
-          duration: 1,
-          scrollTrigger: {
-            trigger: titleRef.current,
-            start: "top 80%",
-          }
-        });
+        // Enhanced title animation with staggered letters
+        const titleSpan = titleRef.current.querySelector('span');
+        if (titleSpan) {
+          // Background fill animation
+          gsap.to(titleSpan, {
+            backgroundSize: "100% 100%",
+            duration: 1,
+            scrollTrigger: {
+              trigger: titleRef.current,
+              start: "top 80%",
+            }
+          });
+          
+          // Add subtle floating effect to title
+          gsap.to(titleRef.current, {
+            y: 5,
+            duration: 2,
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut"
+          });
+        }
       }
       
-      // Path animation with scroll trigger
+      // Path animation using strokeDasharray and strokeDashoffset
       if (pathRef.current) {
+        // Get the total length of the path
         const pathLength = pathRef.current.getTotalLength();
         
-        // Set initial state - path is hidden
+        // Initialize the path as hidden
         gsap.set(pathRef.current, {
           strokeDasharray: pathLength,
           strokeDashoffset: pathLength
         });
         
-        // Animate the path drawing on scroll
+        // Animate the path drawing as the user scrolls
         gsap.to(pathRef.current, {
           strokeDashoffset: 0,
-          duration: 2,
-          ease: "power2.inOut",
+          ease: "none",
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: "top 70%",
+            start: "top 80%",
             end: "bottom 70%",
-            scrub: 0.5,
+            scrub: 0.5, // Smoother scrubbing effect
           }
+        });
+        
+        // Add thickness animation that responds to scroll
+        ScrollTrigger.create({
+          trigger: sectionRef.current,
+          start: "top 80%",
+          end: "bottom 70%",
+          scrub: 0.3,
+          onUpdate: (self) => {
+            // Grow from 2 to 6 pixels as scroll progresses
+            const thickness = 2 + (self.progress * 4);
+            gsap.set(pathRef.current, { strokeWidth: thickness });
+          }
+        });
+      }
+      
+      // Desktop step animations
+      if (stepsRef.current.length) {
+        stepsRef.current.forEach((step, index) => {
+          if (!step) return;
+          
+          // Staggered animation for each step
+          gsap.from(step, {
+            y: 20,
+            opacity: 0,
+            duration: 0.5,
+            delay: 0.1 + (index * 0.1),
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: "top 80%",
+              toggleActions: "play none none reverse"
+            }
+          });
+          
+          // Pulse animation for step number
+          const stepNumber = step.querySelector('.step-number');
+          if (stepNumber) {
+            gsap.to(stepNumber, {
+              scale: 1.2,
+              duration: 0.3,
+              yoyo: true,
+              repeat: 1,
+              delay: 0.3 + (index * 0.1),
+              scrollTrigger: {
+                trigger: sectionRef.current,
+                start: "top 80%",
+                toggleActions: "play none none none"
+              }
+            });
+          }
+        });
+      }
+      
+      // Mobile steps animations
+      if (mobileStepsRef.current.length) {
+        mobileStepsRef.current.forEach((step, index) => {
+          if (!step) return;
+          
+          // Initialize states
+          const details = step.querySelector('.step-details');
+          if (details) {
+            gsap.set(details, { height: 0, opacity: 0 });
+          }
+          
+          // Staggered entrance animation
+          gsap.from(step, {
+            x: index % 2 === 0 ? -20 : 20,
+            opacity: 0,
+            duration: 0.4,
+            delay: 0.1 + (index * 0.1),
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: "top 90%",
+              toggleActions: "play none none reverse"
+            }
+          });
+          
+          // Add click handler for toggling
+          step.addEventListener('click', () => toggleMobileStep(index));
         });
       }
     }, sectionRef);
@@ -87,23 +232,10 @@ const HowItWorks: React.FC = () => {
     };
   }, []);
   
-  // Step content positioning
-  const getContentPosition = (index: number) => {
-    // Fixed positions for dots on the path
-    const positions = [
-      { top: '120px', left: '150px' },   // #1 below line
-      { top: '20px', left: '450px' },    // #2 at top
-      { top: '280px', left: '760px' },   // #3 at bottom
-      { top: '100px', left: '1050px' }   // #4 to the right
-    ];
-    
-    return positions[index];
-  };
-  
   return (
     <section 
       ref={sectionRef} 
-      className="relative py-20 bg-background overflow-hidden"
+      className="relative py-10 bg-background overflow-hidden"
     >
       {/* Background Elements */}
       <div className="absolute top-0 right-0 w-72 h-72 bg-accent/5 rounded-full -mr-20 -mt-20" />
@@ -112,96 +244,90 @@ const HowItWorks: React.FC = () => {
       <div className="container relative z-10">
         <h2 
           ref={titleRef}
-          className="text-3xl md:text-5xl font-bold text-center mb-32"
+          className="text-3xl md:text-4xl font-bold text-center mb-10"
         >
           How It <span className="text-accent px-2 py-1 bg-gradient-to-r from-accent/20 to-accent/20 bg-no-repeat bg-left-bottom">Works</span>
         </h2>
         
-        <div className="relative max-w-6xl mx-auto" style={{ minHeight: "600px" }}>
-          {/* Mobile View (Steps in a simple list) */}
-          <div className="block md:hidden space-y-8">
-            {steps.map((step, index) => (
-              <div key={index} className="bg-white rounded-xl shadow-lg p-6">
-                <div className="flex items-center mb-4">
-                  <div className="flex-shrink-0 mr-4 w-10 h-10 rounded-full bg-accent flex items-center justify-center text-white font-bold">
+        {/* Mobile View (Interactive expandable steps) */}
+        <div className="block md:hidden space-y-3 px-4">
+          {steps.map((step, index) => (
+            <div 
+              key={index} 
+              ref={addToMobileStepsRef}
+              className="bg-white rounded-xl shadow-md p-4 cursor-pointer hover:shadow-lg transition-shadow duration-300"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <div className="step-number flex-shrink-0 mr-3 text-primary text-xl font-bold">
                     {index + 1}
                   </div>
-                  <h3 className="text-xl font-bold text-primary">{step.title}</h3>
+                  <h3 className="text-lg font-bold text-primary">{step.title}</h3>
                 </div>
-                <p className="text-gray-600">{step.description}</p>
+                <div className="expand-icon text-primary">
+                  <IconWrapper name="FiArrowDown" size={20} />
+                </div>
+              </div>
+              
+              <div className="step-details overflow-hidden mt-2 opacity-0 h-0">
+                <div className="flex items-start pt-2 border-t border-gray-100 mt-2">
+                  <div className="w-10 h-10 rounded-full bg-accent mr-3 flex-shrink-0 flex items-center justify-center">
+                    {step.icon}
+                  </div>
+                  <p className="text-gray-600 text-sm pt-2">{step.description}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+        
+        {/* Desktop View - Horizontal flowing layout */}
+        <div className="hidden md:block relative">
+          {/* Step Boxes */}
+          <div className="grid grid-cols-4 gap-4 relative pt-8 steps-grid">
+            {steps.map((step, index) => (
+              <div 
+                key={index}
+                ref={addToStepsRef}
+                className="flex flex-col items-center"
+              >
+                {/* Circle with number */}
+                <div 
+                  className="step-number text-primary text-xl font-bold mb-4 z-10"
+                >
+                  {index + 1}
+                </div>
+                
+                {/* Step Icon */}
+                <div className="w-16 h-16 rounded-full bg-accent flex items-center justify-center shadow-lg mb-3">
+                  {step.icon}
+                </div>
+                
+                {/* Content */}
+                <div className="text-center px-4">
+                  <h3 className="text-lg font-bold text-primary mb-1">{step.title}</h3>
+                  <p className="text-gray-600 text-sm">{step.description}</p>
+                </div>
               </div>
             ))}
           </div>
           
-          {/* Desktop View (Path with dots and text) */}
-          <div className="hidden md:block">
-            {/* SVG Path for Animation - Extended path */}
+          {/* SVG Path below all content */}
+          <div className="mt-4 relative">
             <svg 
-              className="absolute inset-0 w-full h-full overflow-visible"
+              className="w-full h-20 overflow-visible"
+              viewBox="0 0 1600 120"
               preserveAspectRatio="none"
-              viewBox="0 0 1200 400"
             >
               <path
                 ref={pathRef}
-                d="M50,80 C250,20 400,300 600,250 C800,200 1000,50 1150,100"
+                d="M0,60 C100,30 150,90 200,60 C250,30 300,90 350,60 C400,30 450,90 500,60 C550,30 600,90 650,60 C700,30 750,90 800,60 C850,30 900,90 950,60 C1000,30 1050,90 1100,60 C1150,30 1200,90 1250,60 C1300,30 1350,90 1400,60 C1450,30 1500,90 1550,60 C1600,30"
                 fill="none"
                 stroke="#3B82F6"
                 strokeWidth="4"
-                strokeDasharray="none"
-                opacity="0.8"
+                strokeLinecap="round"
               />
             </svg>
-            
-            {/* Dots on the path */}
-            {steps.map((step, index) => {
-              const position = getContentPosition(index);
-              
-              return (
-                <div 
-                  key={`dot-${index}`}
-                  className="absolute w-10 h-10 rounded-full bg-accent shadow-lg flex items-center justify-center transform -translate-x-1/2 -translate-y-1/2 z-20"
-                  style={{ 
-                    top: position.top, 
-                    left: position.left 
-                  }}
-                >
-                  <div className="flex items-center justify-center w-6 h-6 rounded-full bg-white text-accent font-bold text-sm">
-                    {index + 1}
-                  </div>
-                </div>
-              );
-            })}
-            
-            {/* Text boxes with static positioning */}
-            <div className="absolute top-[150px] left-[20px] z-10 w-[240px]">
-              <div className="bg-white p-4 rounded-lg shadow-md">
-                <h3 className="text-xl font-bold mb-2 text-primary">{steps[0].title}</h3>
-                <p className="text-gray-600 text-sm leading-relaxed">{steps[0].description}</p>
-              </div>
-            </div>
-            
-            {/* Box 2 moved to the right of its number */}
-            <div className="absolute top-[-30px] left-[480px] z-10 w-[240px]">
-              <div className="bg-white p-4 rounded-lg shadow-md">
-                <h3 className="text-xl font-bold mb-2 text-primary">{steps[1].title}</h3>
-                <p className="text-gray-600 text-sm leading-relaxed">{steps[1].description}</p>
-              </div>
-            </div>
-            
-            <div className="absolute top-[310px] left-[660px] z-10 w-[240px]">
-              <div className="bg-white p-4 rounded-lg shadow-md">
-                <h3 className="text-xl font-bold mb-2 text-primary">{steps[2].title}</h3>
-                <p className="text-gray-600 text-sm leading-relaxed">{steps[2].description}</p>
-              </div>
-            </div>
-            
-            {/* Box 4 moved to the right of its number */}
-            <div className="absolute top-[50px] left-[1080px] z-10 w-[240px]">
-              <div className="bg-white p-4 rounded-lg shadow-md">
-                <h3 className="text-xl font-bold mb-2 text-primary">{steps[3].title}</h3>
-                <p className="text-gray-600 text-sm leading-relaxed">{steps[3].description}</p>
-              </div>
-            </div>
           </div>
         </div>
       </div>

@@ -77,7 +77,7 @@ const FundingTypes: React.FC = () => {
             duration: 0.8,
             scrollTrigger: {
               trigger: titleRef.current,
-              start: "top 80%",
+              start: "top 85%",
             }
           }
         );
@@ -89,7 +89,7 @@ const FundingTypes: React.FC = () => {
             duration: 1,
             scrollTrigger: {
               trigger: titleRef.current,
-              start: "top 80%",
+              start: "top 85%",
             }
           }
         );
@@ -97,7 +97,7 @@ const FundingTypes: React.FC = () => {
       
       // Cards animation
       if (cardRefs.current.length > 0) {
-        gsap.set(cardRefs.current, { y: 100, opacity: 0 });
+        gsap.set(cardRefs.current, { y: 60, opacity: 0 });
         
         cardRefs.current.forEach((card, index) => {
           if (card) {
@@ -105,7 +105,7 @@ const FundingTypes: React.FC = () => {
             const tl = gsap.timeline({
               scrollTrigger: {
                 trigger: card,
-                start: "top 85%",
+                start: "top 90%",
               }
             });
             
@@ -113,9 +113,9 @@ const FundingTypes: React.FC = () => {
             tl.to(card, {
               y: 0,
               opacity: 1,
-              duration: 0.6,
+              duration: 0.5,
               ease: "power2.out",
-              delay: index * 0.1
+              delay: index * 0.08
             });
             
             // Card content animations
@@ -125,10 +125,10 @@ const FundingTypes: React.FC = () => {
             const btnEl = card.querySelector('.card-btn');
             
             if (iconEl && titleEl && descEl && btnEl) {
-              tl.from(iconEl, { scale: 0, duration: 0.4, ease: "back.out(1.7)" }, "-=0.2")
-                .from(titleEl, { y: 20, opacity: 0, duration: 0.3 }, "-=0.2")
-                .from(descEl, { y: 20, opacity: 0, duration: 0.3 }, "-=0.2")
-                .from(btnEl, { y: 20, opacity: 0, duration: 0.3 }, "-=0.2");
+              tl.from(iconEl, { scale: 0, duration: 0.3, ease: "back.out(1.7)" }, "-=0.2")
+                .from(titleEl, { y: 15, opacity: 0, duration: 0.2 }, "-=0.1")
+                .from(descEl, { y: 15, opacity: 0, duration: 0.2 }, "-=0.1")
+                .from(btnEl, { y: 15, opacity: 0, duration: 0.2 }, "-=0.1");
             }
             
             // Setup hover animation
@@ -139,13 +139,39 @@ const FundingTypes: React.FC = () => {
               // Set initial state
               gsap.set(contentBack, { opacity: 0 });
               
-              // Hover animation
+              // Hover animation - enhanced for mobile
+              let cardHoverTl: gsap.core.Timeline;
+
+              // Click/tap handler for mobile
+              const handleCardTap = () => {
+                const isFrontVisible = Number(gsap.getProperty(contentFront, 'opacity')) > 0.5;
+                
+                if (isFrontVisible) {
+                  gsap.to(contentFront, { y: -20, opacity: 0, duration: 0.3 });
+                  gsap.to(contentBack, { y: 0, opacity: 1, duration: 0.3, delay: 0.1 });
+                  gsap.to(card, { 
+                    y: -5, 
+                    boxShadow: "0 20px 30px -8px rgba(0, 0, 0, 0.2)",
+                    duration: 0.3
+                  });
+                } else {
+                  gsap.to(contentFront, { y: 0, opacity: 1, duration: 0.3, delay: 0.1 });
+                  gsap.to(contentBack, { y: 20, opacity: 0, duration: 0.3 });
+                  gsap.to(card, { 
+                    y: 0, 
+                    boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
+                    duration: 0.3
+                  });
+                }
+              };
+              
+              // Desktop hover
               card.addEventListener('mouseenter', () => {
                 gsap.to(contentFront, { y: -20, opacity: 0, duration: 0.3 });
                 gsap.to(contentBack, { y: 0, opacity: 1, duration: 0.3, delay: 0.1 });
                 gsap.to(card, { 
-                  y: -10, 
-                  boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
+                  y: -5, 
+                  boxShadow: "0 20px 30px -8px rgba(0, 0, 0, 0.2)",
                   duration: 0.3
                 });
               });
@@ -159,6 +185,9 @@ const FundingTypes: React.FC = () => {
                   duration: 0.3
                 });
               });
+              
+              // Mobile tap
+              card.addEventListener('touchstart', handleCardTap);
             }
           }
         });
@@ -175,7 +204,7 @@ const FundingTypes: React.FC = () => {
   const arrowRightIcon = <IconWrapper name="FiArrowRight" />;
   
   return (
-    <section ref={sectionRef} className="relative py-24 bg-white">
+    <section ref={sectionRef} className="relative py-10 bg-white">
       {/* Background decorations */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-20 left-0 w-64 h-64 rounded-full bg-primary/5 -ml-32"></div>
@@ -185,40 +214,40 @@ const FundingTypes: React.FC = () => {
       <div className="container relative z-10">
         <h2 
           ref={titleRef}
-          className="text-3xl md:text-5xl font-bold text-center mb-20"
+          className="text-3xl md:text-4xl font-bold text-center mb-10"
         >
           Our <span className="text-accent bg-gradient-to-r from-accent/20 to-accent/20 bg-[length:100%_40%] bg-bottom bg-no-repeat px-2">Funding</span> Solutions
         </h2>
         
         <div 
           ref={cardsRef}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
         >
           {fundingTypes.map((type, index) => (
             <div 
               key={index}
               ref={addToCardRefs}
-              className="funding-card relative h-80 rounded-xl shadow-lg cursor-pointer overflow-hidden bg-white transition-all duration-300"
+              className="funding-card relative h-64 rounded-xl shadow-lg cursor-pointer overflow-hidden bg-white transition-all duration-300"
             >
               {/* Card background with gradient */}
               <div className={`absolute inset-0 bg-gradient-to-br ${type.color} opacity-0 transition-opacity duration-300 group-hover:opacity-100`}></div>
               
               {/* Front content */}
-              <div className="card-front-content absolute inset-0 p-6 flex flex-col items-center justify-center text-center z-10">
-                <div className="card-icon text-5xl mb-4">{type.icon}</div>
-                <h3 className="card-title text-2xl font-bold mb-3 text-primary">{type.title}</h3>
+              <div className="card-front-content absolute inset-0 p-5 flex flex-col items-center justify-center text-center z-10">
+                <div className="card-icon text-4xl mb-3">{type.icon}</div>
+                <h3 className="card-title text-xl font-bold mb-2 text-primary">{type.title}</h3>
                 <p className="card-desc text-sm text-gray-600">{type.description}</p>
               </div>
               
               {/* Back content */}
-              <div className="card-back-content absolute inset-0 p-6 flex flex-col items-center justify-center text-center bg-white z-10">
-                <h3 className="text-2xl font-bold mb-4 text-accent">{type.title}</h3>
-                <p className="text-sm mb-6">{type.description}</p>
+              <div className="card-back-content absolute inset-0 p-5 flex flex-col items-center justify-center text-center bg-white z-10">
+                <h3 className="text-xl font-bold mb-3 text-accent">{type.title}</h3>
+                <p className="text-sm mb-4">{type.description}</p>
                 <Link 
                   to={type.path}
-                  className="card-btn flex items-center justify-center space-x-2 bg-accent text-white py-3 px-6 rounded-lg hover:bg-accent/90 transition-colors"
+                  className="card-btn flex items-center justify-center space-x-2 bg-accent text-white py-2 px-4 rounded-lg hover:bg-accent/90 transition-colors"
                 >
-                  <span>Learn More</span>
+                  <span>Request Funding</span>
                   {arrowRightIcon}
                 </Link>
               </div>
