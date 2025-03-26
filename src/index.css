@@ -56,6 +56,13 @@
     .section-md {
         @apply py-24;
     }
+    /* Lighter button style for funding types section */
+    .light-btn {
+        @apply bg-accent/50 !important;
+    }
+    .light-btn:hover {
+        @apply bg-accent/60 !important;
+    }
 }
 
 

@@ -17,18 +17,23 @@ const AnimatedButton: React.FC<AnimatedButtonProps> = ({
 }) => {
   const buttonRef = useRef<HTMLAnchorElement>(null);
   const [isHovered, setIsHovered] = useState(false);
+  const isLightButton = className.includes('light-btn');
   
   useEffect(() => {
     if (buttonRef.current) {
-      // Create a pulse animation
+      // Create a pulse animation with different intensity based on button type
+      const shadowColor = isLightButton 
+        ? 'rgba(255, 59, 48, 0.3)' // Lighter shadow for light buttons 
+        : 'rgba(255, 59, 48, 0.6)'; // Regular shadow for normal buttons
+        
       const pulseAnimation = gsap.to(buttonRef.current, {
-        boxShadow: '0 0 15px rgba(255, 59, 48, 0.6)', // Subtle red shadow
-        scale: 1.02,
+        boxShadow: `0 0 15px ${shadowColor}`,
+        scale: isLightButton ? 1.01 : 1.02, // Smaller scale for light buttons
         duration: 1.2,
         repeat: -1,
         yoyo: true,
         ease: "sine.inOut",
-        paused: true // Start paused
+        paused: true
       });
       
       // Start the animation
@@ -39,14 +44,18 @@ const AnimatedButton: React.FC<AnimatedButtonProps> = ({
         pulseAnimation.kill();
       };
     }
-  }, []);
+  }, [isLightButton]);
   
   const handleMouseEnter = () => {
     setIsHovered(true);
     if (buttonRef.current) {
+      const shadowColor = isLightButton 
+        ? 'rgba(255, 59, 48, 0.4)' // Lighter hover shadow
+        : 'rgba(255, 59, 48, 0.8)'; // Regular hover shadow
+        
       gsap.to(buttonRef.current, {
-        scale: 1.05,
-        boxShadow: '0 0 20px rgba(255, 59, 48, 0.8)', // Stronger red shadow on hover
+        scale: isLightButton ? 1.03 : 1.05, // Smaller hover scale for light buttons
+        boxShadow: `0 0 20px ${shadowColor}`,
         duration: 0.3,
         ease: 'power2.out'
       });

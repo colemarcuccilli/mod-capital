@@ -246,7 +246,7 @@ const FundingTypes: React.FC = () => {
                 <p className="text-sm mb-4 text-gray-600">{type.description}</p>
                 <AnimatedButton 
                   to={type.path}
-                  className="card-btn flex items-center justify-center space-x-2 text-sm"
+                  className="card-btn flex items-center justify-center space-x-2 text-sm light-btn"
                 >
                   Request Funding
                 </AnimatedButton>

@@ -84,7 +84,7 @@ const FAQs: React.FC = () => {
         // Reset any transforms or styles 
         gsap.to(item, {
           y: 0, 
-          backgroundColor: 'rgba(255, 255, 255, 0.85)',
+          backgroundColor: 'white',
           boxShadow: '0 4px 16px rgba(0, 0, 0, 0.08)',
           duration: 0.3
         });
@@ -127,7 +127,7 @@ const FAQs: React.FC = () => {
       // Reset any transforms or styles
       gsap.to(faqItem, {
         y: 0,
-        backgroundColor: 'rgba(255, 255, 255, 0.85)',
+        backgroundColor: 'white',
         boxShadow: '0 4px 16px rgba(0, 0, 0, 0.08)',
         duration: 0.3
       });
@@ -173,7 +173,7 @@ const FAQs: React.FC = () => {
       
       // Add a subtle highlight to the expanded item
       gsap.to(faqItem, {
-        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+        backgroundColor: 'white',
         boxShadow: '0 8px 24px rgba(0, 0, 0, 0.12)',
         duration: 0.3
       });
@@ -255,15 +255,16 @@ const FAQs: React.FC = () => {
         faqItemsRef.current.forEach((faqItem, index) => {
           if (!faqItem) return;
           
-          // Staggered entrance animation - simpler and more stable
+          // Alternating slide-in animation from left and right
+          const isEven = index % 2 === 0;
           gsap.fromTo(faqItem,
             { 
-              y: 30,
+              x: isEven ? -50 : 50,
               opacity: 0,
               scale: 0.95
             },
             { 
-              y: 0,
+              x: 0,
               opacity: 1,
               scale: 1,
               duration: 0.6,
@@ -285,32 +286,7 @@ const FAQs: React.FC = () => {
             gsap.set(minusIcon, { autoAlpha: 0 });
           }
           
-          // Add hover effect for each FAQ item (but not for mobile)
-          if (window.innerWidth >= 768) {
-            faqItem.addEventListener('mouseenter', () => {
-              if (!faqItem.classList.contains('expanded')) {
-                gsap.to(faqItem, {
-                  backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                  y: -2, // Smaller movement
-                  boxShadow: '0 8px 24px rgba(0, 0, 0, 0.12)',
-                  duration: 0.3,
-                  ease: "power2.out"
-                });
-              }
-            });
-            
-            faqItem.addEventListener('mouseleave', () => {
-              if (!faqItem.classList.contains('expanded')) {
-                gsap.to(faqItem, {
-                  backgroundColor: 'rgba(255, 255, 255, 0.85)',
-                  y: 0,
-                  boxShadow: '0 4px 16px rgba(0, 0, 0, 0.08)',
-                  duration: 0.3,
-                  ease: "power2.out"
-                });
-              }
-            });
-          }
+          // Remove hover effect since they're already white
           
           // Add click handler
           const clickHandler = () => toggleFAQ(index);
@@ -333,12 +309,6 @@ const FAQs: React.FC = () => {
           if (index !== -1) {
             const clickHandler = () => toggleFAQ(index);
             item.removeEventListener('click', clickHandler);
-          }
-          
-          // Also clean up hover event listeners
-          if (window.innerWidth >= 768) {
-            item.removeEventListener('mouseenter', () => {});
-            item.removeEventListener('mouseleave', () => {});
           }
         }
       });
@@ -410,7 +380,7 @@ const FAQs: React.FC = () => {
             <div
               key={index}
               ref={addToFaqItemsRef}
-              className="faq-item backdrop-blur-sm bg-white/85 rounded-xl shadow-md p-5 mb-4 cursor-pointer hover:shadow-lg transition-shadow duration-300"
+              className="faq-item backdrop-blur-sm bg-white rounded-xl shadow-md p-5 mb-4 cursor-pointer hover:shadow-lg transition-shadow duration-300"
             >
               <div className="flex items-center justify-between">
                 <h3 className="text-lg md:text-xl font-semibold text-black pr-4">

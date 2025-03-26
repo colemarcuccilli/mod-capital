@@ -16,7 +16,6 @@ interface Step {
 const HowItWorks: React.FC = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
-  const pathRef = useRef<SVGPathElement>(null);
   const stepsRef = useRef<(HTMLDivElement | null)[]>([]);
   const mobileStepsRef = useRef<(HTMLDivElement | null)[]>([]);
   
@@ -41,22 +40,22 @@ const HowItWorks: React.FC = () => {
     {
       icon: <IconWrapper name="FiFileText" size={24} className="text-white" />,
       title: "Request Funding",
-      description: "Submit your funding request through our simple form"
+      description: "Submit your funding request through our simple online form to start quickly"
     },
     {
       icon: <IconWrapper name="FiCheckSquare" size={24} className="text-white" />,
       title: "Funding Terms",
-      description: "We'll create a funding agreement with clear terms"
+      description: "We'll create a funding agreement with clear terms and manageable conditions"
     },
     {
       icon: <IconWrapper name="FiLifeBuoy" size={24} className="text-white" />,
       title: "Funding Review",
-      description: "Our team will review and validate your funding needs"
+      description: "Our team will review and validate your funding needs within 24 hours"
     },
     {
       icon: <IconWrapper name="FiDollarSign" size={24} className="text-white" />,
       title: "Fast Funding",
-      description: "Receive your funding within 48 hours or less"
+      description: "Receive your funding within 48 hours or less to your preferred account"
     }
   ];
   
@@ -124,43 +123,54 @@ const HowItWorks: React.FC = () => {
             }
           });
           
-          // Add subtle floating effect to title
-          gsap.to(titleRef.current, {
-            y: 5,
-            duration: 2,
+          // Create a more natural floating motion for the title using timeline
+          const floatTL = gsap.timeline({
             repeat: -1,
             yoyo: true,
+            repeatRefresh: true // This will recreate the animation on each repeat
+          });
+          
+          floatTL.to(titleRef.current, {
+            y: "5px", 
+            rotation: 0.5, // Very slight rotation for more natural motion
+            duration: 2.5,
             ease: "sine.inOut"
           });
         }
       }
       
-      // Path subtle wave animation
-      if (pathRef.current) {
-        // Create a subtle wave animation
-        gsap.set(pathRef.current, {
-          strokeDasharray: "4,16",
-          strokeDashoffset: 0
-        });
-        
-        // Animate the stroke-dashoffset for a flowing effect
-        gsap.to(pathRef.current, {
-          strokeDashoffset: 20,
-          repeat: -1,
-          duration: 10,
-          ease: "linear"
-        });
-        
-        // Scale up the path on entry
-        gsap.from(pathRef.current, {
-          scaleX: 0,
-          transformOrigin: "left center",
-          duration: 1.2,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 75%",
-          }
+      // Triangle animations
+      const triangles = document.querySelectorAll('.step-triangle');
+      if (triangles.length) {
+        // Animate each triangle with a slight delay
+        triangles.forEach((triangle, index) => {
+          // Initial state
+          gsap.set(triangle, { 
+            scale: 0,
+            transformOrigin: "center bottom"
+          });
+          
+          // Scale up animation
+          gsap.to(triangle, {
+            scale: 1,
+            duration: 0.5,
+            delay: 0.3 + (index * 0.2),
+            ease: "back.out(1.7)",
+            scrollTrigger: {
+              trigger: stepsRef.current[index],
+              start: "top 80%",
+            }
+          });
+          
+          // Add a subtle bounce animation
+          gsap.to(triangle, {
+            y: -3,
+            duration: 1 + (index * 0.2),
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut",
+            delay: 0.5 + (index * 0.1)
+          });
         });
       }
       
@@ -274,7 +284,7 @@ const HowItWorks: React.FC = () => {
           {/* Desktop View - Horizontal flowing layout */}
           <div className="hidden md:block relative">
             {/* Step Boxes */}
-            <div className="grid grid-cols-4 gap-4 relative steps-grid">
+            <div className="grid grid-cols-4 gap-2 relative steps-grid">
               {steps.map((step, index) => (
                 <div 
                   key={index}
@@ -289,29 +299,25 @@ const HowItWorks: React.FC = () => {
                   {/* Content */}
                   <div className="text-center px-4">
                     <h3 className="text-lg font-bold text-black mb-1">{step.title}</h3>
-                    <p className="text-gray-600 text-sm">{step.description}</p>
+                    <p className="text-gray-600 text-sm mb-1">{step.description}</p>
+
+                    {/* Triangle under each step */}
+                    <svg 
+                      className="w-full h-6 overflow-visible"
+                      viewBox="0 0 100 20"
+                      preserveAspectRatio="none"
+                    >
+                      <polygon 
+                        points="45,20 50,10 55,20" 
+                        fill="none" 
+                        stroke="rgba(255, 0, 0, 0.6)" 
+                        strokeWidth="1" 
+                        className="step-triangle"
+                      />
+                    </svg>
                   </div>
                 </div>
               ))}
-            </div>
-            
-            {/* SVG Path below all content */}
-            <div className="mt-4 relative">
-              <svg 
-                className="w-full h-20 overflow-visible"
-                viewBox="0 0 1600 120"
-                preserveAspectRatio="none"
-              >
-                {/* Wavy path */}
-                <path
-                  ref={pathRef}
-                  d="M0,60 C100,30 150,90 200,60 C250,30 300,90 350,60 C400,30 450,90 500,60 C550,30 600,90 650,60 C700,30 750,90 800,60 C850,30 900,90 950,60 C1000,30 1050,90 1100,60 C1150,30 1200,90 1250,60 C1300,30 1350,90 1400,60 C1450,30 1500,90 1550,60 C1600,30 1600,60"
-                  fill="none"
-                  stroke="#FF0000"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-              </svg>
             </div>
           </div>
         </div>
