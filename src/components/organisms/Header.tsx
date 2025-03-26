@@ -51,7 +51,7 @@ const Header: React.FC = () => {
   return (
     <header 
       ref={headerRef}
-      className="fixed top-0 left-0 right-0 z-30 transition-all duration-300 py-4"
+      className="fixed top-0 left-0 right-0 z-30 transition-all duration-300 py-3"
     >
       <div className="container flex justify-between items-center">
         <Logo />
