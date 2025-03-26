@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
+import Logo from '../atoms/Logo';
 
 interface IntroAnimationProps {
   onComplete: () => void;
@@ -13,7 +14,7 @@ const IntroAnimation: React.FC<IntroAnimationProps> = ({ onComplete }) => {
   const logoWrapperRef = useRef<HTMLDivElement>(null);
   const logoBorderRef = useRef<HTMLDivElement>(null);
   const logoBorderInnerRef = useRef<HTMLDivElement>(null);
-  const logoTextRef = useRef<HTMLDivElement>(null);
+  const logoRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
     // Check for reduced motion preference
@@ -66,7 +67,7 @@ const IntroAnimation: React.FC<IntroAnimationProps> = ({ onComplete }) => {
         opacity: 0 
       }, "-=100%")
       .set(logoWrapperRef.current, { opacity: 1 })
-      .from(logoTextRef.current, { 
+      .from(logoRef.current, { 
         duration: 0.4,
         opacity: 0,
         scale: 0.8,
@@ -102,7 +103,7 @@ const IntroAnimation: React.FC<IntroAnimationProps> = ({ onComplete }) => {
         ease: "power4.in", 
         scale: 15 
       }, "-=60%")
-      .to(logoTextRef.current, { 
+      .to(logoRef.current, { 
         duration: 0.25, 
         opacity: 0,
         scale: 1.2 
@@ -167,15 +168,13 @@ const IntroAnimation: React.FC<IntroAnimationProps> = ({ onComplete }) => {
           style={{ width: 'calc(140% - 0.5em)', height: 'calc(160% - 0.5em)', zIndex: 2 }}
         ></div>
         
-        {/* Logo Text */}
+        {/* Logo */}
         <div 
-          ref={logoTextRef}
+          ref={logoRef}
           className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center z-10"
           style={{ width: '90%' }}
         >
-          <span className="text-black text-4xl md:text-5xl font-bold">MOD</span>
-          <span className="text-red-600 text-4xl md:text-5xl font-bold mx-2">|</span>
-          <span className="text-gray-600 text-4xl md:text-5xl font-bold">CAPITAL</span>
+          <Logo className="w-60 h-auto" />
         </div>
       </div>
     </div>

@@ -145,21 +145,21 @@ const Footer: React.FC = () => {
     <footer className="bg-gray-900 text-white relative">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div className="col-span-1 md:col-span-2">
+          <div className="col-span-1 md:col-span-1">
             <div className="flex items-center mb-6">
-              <img src="/logo.png" alt="Mod Capital Logo" className="h-8 w-auto" />
+              <Logo className="w-40 h-auto" />
             </div>
             <p className="text-gray-400 mb-6">
               Empowering businesses with innovative funding solutions. Fast, reliable, and tailored to your needs.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              <a href="#" className="text-gray-400 hover:text-red-500 transition-colors">
                 {facebookIcon}
               </a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              <a href="#" className="text-gray-400 hover:text-red-500 transition-colors">
                 {twitterIcon}
               </a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              <a href="#" className="text-gray-400 hover:text-red-500 transition-colors">
                 {linkedinIcon}
               </a>
             </div>
