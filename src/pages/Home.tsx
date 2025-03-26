@@ -3,7 +3,6 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Hero from '../components/organisms/Hero';
 import HowItWorks from '../components/organisms/HowItWorks';
-import MoneyMolecule from '../components/organisms/MoneyMolecule';
 import FundingTypes from '../components/organisms/FundingTypes';
 import Testimonials from '../components/organisms/Testimonials';
 import FAQs from '../components/organisms/FAQs';
@@ -17,18 +16,18 @@ const Home: React.FC = () => {
   const fundingTypesSectionRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
-    // Set up page transition
+    // Set up page transitions and scroll animations
     const ctx = gsap.context(() => {
       // On desktop, create a seamless scroll experience between How It Works and Funding Types
       if (window.innerWidth >= 768) {
         ScrollTrigger.create({
           trigger: howItWorksSectionRef.current,
           start: "top 100%",
-          end: "bottom -200px", // Delay fade-out by changing from -10px to -200px
+          end: "bottom -200px",
           scrub: true,
           onUpdate: (self) => {
             // Ensure the opacity only starts to decrease when the section is leaving the viewport
-            if (self.progress > 0.7) { // Changed from 0.5 to 0.7 to delay the fade effect
+            if (self.progress > 0.7) {
               const opacity = gsap.utils.clamp(0, 1, gsap.utils.mapRange(0.7, 1, 1, 0, self.progress));
               gsap.to(howItWorksSectionRef.current, {
                 opacity,
@@ -79,7 +78,7 @@ const Home: React.FC = () => {
         ctaLink="#funding-types"
       />
       
-      <div ref={howItWorksSectionRef}>
+      <div id="how-it-works" ref={howItWorksSectionRef}>
         <HowItWorks />
       </div>
       
