@@ -4,6 +4,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { FiArrowRight } from 'react-icons/fi';
 import IconWrapper from '../atoms/IconWrapper';
+import AnimatedButton from '../atoms/AnimatedButton';
 
 // Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger);
@@ -204,7 +205,7 @@ const FundingTypes: React.FC = () => {
   const arrowRightIcon = <IconWrapper name="FiArrowRight" />;
   
   return (
-    <section ref={sectionRef} className="relative py-10 bg-white">
+    <section ref={sectionRef} className="relative py-20 md:py-32 bg-white" id="funding-types">
       {/* Background decorations */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-20 left-0 w-64 h-64 rounded-full bg-primary/5 -ml-32"></div>
@@ -243,13 +244,12 @@ const FundingTypes: React.FC = () => {
               <div className="card-back-content absolute inset-0 p-5 flex flex-col items-center justify-center text-center bg-white z-10">
                 <h3 className="text-xl font-bold mb-3 text-accent">{type.title}</h3>
                 <p className="text-sm mb-4 text-gray-600">{type.description}</p>
-                <Link 
+                <AnimatedButton 
                   to={type.path}
-                  className="card-btn flex items-center justify-center space-x-2 bg-accent text-white py-2 px-4 rounded-lg hover:bg-accent/90 transition-colors"
+                  className="card-btn flex items-center justify-center space-x-2 text-sm"
                 >
-                  <span>Request Funding</span>
-                  {arrowRightIcon}
-                </Link>
+                  Request Funding
+                </AnimatedButton>
               </div>
             </div>
           ))}

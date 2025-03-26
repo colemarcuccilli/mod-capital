@@ -1,10 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Button from '../atoms/Button';
+import AnimatedButton from '../atoms/AnimatedButton';
 import gsap from 'gsap';
 import { TextPlugin } from 'gsap/TextPlugin';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import { FiChevronDown } from 'react-icons/fi';
 import IconWrapper from '../atoms/IconWrapper';
+import { Link } from 'react-router-dom';
 
 // Register TextPlugin and ScrollToPlugin
 gsap.registerPlugin(TextPlugin, ScrollToPlugin);
@@ -172,13 +174,12 @@ const Hero: React.FC<HeroProps> = ({
           </p>
           
           <div ref={ctaRef}>
-            <Button 
-              variant="primary"
-              className="text-lg px-8 py-4"
-              onClick={() => window.location.href = ctaLink}
+            <AnimatedButton 
+              to={ctaLink}
+              className="text-lg"
             >
               {ctaText}
-            </Button>
+            </AnimatedButton>
           </div>
         </div>
       </div>

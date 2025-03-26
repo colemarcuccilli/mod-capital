@@ -73,7 +73,7 @@ const Home: React.FC = () => {
   return (
     <div className="overflow-hidden">
       <Hero 
-        subtitle="Swift Funding Solutions for Real Estate Investors" 
+        subtitle="Simple Funding Solutions for Real Estate Investors" 
         ctaText="Request Funding" 
         ctaLink="#funding-types"
       />
@@ -88,7 +88,8 @@ const Home: React.FC = () => {
       
       <FAQs />
       
-      <Testimonials />
+      {/* Testimonials hidden as requested */}
+      {/* <Testimonials /> */}
     </div>
   );
 };

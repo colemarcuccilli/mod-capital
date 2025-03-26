@@ -222,92 +222,97 @@ const HowItWorks: React.FC = () => {
   
   return (
     <section 
-      ref={sectionRef} 
-      className="relative py-10 bg-background overflow-hidden"
+      ref={sectionRef}
+      className="relative py-20 md:py-32 bg-white"
       id="how-it-works"
     >
-      {/* Background Elements */}
-      <div className="absolute top-0 right-0 w-72 h-72 bg-accent/5 rounded-full -mr-20 -mt-20" />
-      <div className="absolute bottom-0 left-0 w-96 h-96 bg-primary/5 rounded-full -ml-48 -mb-48" />
+      {/* Subtle background decorations */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-gray-50 to-transparent"></div>
+        <div className="absolute top-1/4 -left-10 w-40 h-40 rounded-full bg-red-50 blur-xl opacity-50"></div>
+        <div className="absolute bottom-1/4 -right-10 w-60 h-60 rounded-full bg-red-100 blur-xl opacity-30"></div>
+      </div>
       
       <div className="container relative z-10">
-        <h2 
-          ref={titleRef}
-          className="text-3xl md:text-4xl font-bold text-center mb-10 text-black"
-        >
-          How <span className="text-accent">Funding</span> Works
-        </h2>
-        
-        {/* Mobile View (Interactive expandable steps) */}
-        <div className="block md:hidden space-y-3 px-4">
-          {steps.map((step, index) => (
-            <div 
-              key={index} 
-              ref={addToMobileStepsRef}
-              className="bg-white rounded-xl shadow-md p-4 cursor-pointer hover:shadow-lg transition-shadow duration-300"
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <h3 className="text-lg font-bold text-black">{step.title}</h3>
-                </div>
-                <div className="expand-icon text-primary">
-                  <IconWrapper name="FiArrowDown" size={20} />
-                </div>
-              </div>
-              
-              <div className="step-details overflow-hidden mt-2 opacity-0 h-0">
-                <div className="flex items-start pt-2 border-t border-gray-100 mt-2">
-                  <div className="w-10 h-10 rounded-full bg-accent mr-3 flex-shrink-0 flex items-center justify-center">
-                    {step.icon}
-                  </div>
-                  <p className="text-gray-600 text-sm pt-2">{step.description}</p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-        
-        {/* Desktop View - Horizontal flowing layout */}
-        <div className="hidden md:block relative">
-          {/* Step Boxes */}
-          <div className="grid grid-cols-4 gap-4 relative steps-grid">
+        <div className="max-w-4xl mx-auto">
+          <h2 
+            ref={titleRef} 
+            className="text-3xl md:text-4xl font-bold text-center mb-16 text-primary"
+          >
+            How <span className="text-accent">Funding</span> Works
+          </h2>
+          
+          {/* Mobile View (Interactive expandable steps) */}
+          <div className="block md:hidden space-y-3 px-4">
             {steps.map((step, index) => (
               <div 
-                key={index}
-                ref={addToStepsRef}
-                className="flex flex-col items-center"
+                key={index} 
+                ref={addToMobileStepsRef}
+                className="bg-white rounded-xl shadow-md p-4 cursor-pointer hover:shadow-lg transition-shadow duration-300"
               >
-                {/* Step Icon */}
-                <div className="w-16 h-16 rounded-full bg-accent flex items-center justify-center shadow-lg mb-3">
-                  {step.icon}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <h3 className="text-lg font-bold text-black">{step.title}</h3>
+                  </div>
+                  <div className="expand-icon text-primary">
+                    <IconWrapper name="FiArrowDown" size={20} />
+                  </div>
                 </div>
                 
-                {/* Content */}
-                <div className="text-center px-4">
-                  <h3 className="text-lg font-bold text-black mb-1">{step.title}</h3>
-                  <p className="text-gray-600 text-sm">{step.description}</p>
+                <div className="step-details overflow-hidden mt-2 opacity-0 h-0">
+                  <div className="flex items-start pt-2 border-t border-gray-100 mt-2">
+                    <div className="w-10 h-10 rounded-full bg-accent mr-3 flex-shrink-0 flex items-center justify-center">
+                      {step.icon}
+                    </div>
+                    <p className="text-gray-600 text-sm pt-2">{step.description}</p>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
           
-          {/* SVG Path below all content */}
-          <div className="mt-4 relative">
-            <svg 
-              className="w-full h-20 overflow-visible"
-              viewBox="0 0 1600 120"
-              preserveAspectRatio="none"
-            >
-              {/* Wavy path */}
-              <path
-                ref={pathRef}
-                d="M0,60 C100,30 150,90 200,60 C250,30 300,90 350,60 C400,30 450,90 500,60 C550,30 600,90 650,60 C700,30 750,90 800,60 C850,30 900,90 950,60 C1000,30 1050,90 1100,60 C1150,30 1200,90 1250,60 C1300,30 1350,90 1400,60 C1450,30 1500,90 1550,60 C1600,30 1600,60"
-                fill="none"
-                stroke="#FF0000"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-            </svg>
+          {/* Desktop View - Horizontal flowing layout */}
+          <div className="hidden md:block relative">
+            {/* Step Boxes */}
+            <div className="grid grid-cols-4 gap-4 relative steps-grid">
+              {steps.map((step, index) => (
+                <div 
+                  key={index}
+                  ref={addToStepsRef}
+                  className="flex flex-col items-center"
+                >
+                  {/* Step Icon */}
+                  <div className="w-16 h-16 rounded-full bg-accent flex items-center justify-center shadow-lg mb-3">
+                    {step.icon}
+                  </div>
+                  
+                  {/* Content */}
+                  <div className="text-center px-4">
+                    <h3 className="text-lg font-bold text-black mb-1">{step.title}</h3>
+                    <p className="text-gray-600 text-sm">{step.description}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            
+            {/* SVG Path below all content */}
+            <div className="mt-4 relative">
+              <svg 
+                className="w-full h-20 overflow-visible"
+                viewBox="0 0 1600 120"
+                preserveAspectRatio="none"
+              >
+                {/* Wavy path */}
+                <path
+                  ref={pathRef}
+                  d="M0,60 C100,30 150,90 200,60 C250,30 300,90 350,60 C400,30 450,90 500,60 C550,30 600,90 650,60 C700,30 750,90 800,60 C850,30 900,90 950,60 C1000,30 1050,90 1100,60 C1150,30 1200,90 1250,60 C1300,30 1350,90 1400,60 C1450,30 1500,90 1550,60 C1600,30 1600,60"
+                  fill="none"
+                  stroke="#FF0000"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </div>
           </div>
         </div>
       </div>
