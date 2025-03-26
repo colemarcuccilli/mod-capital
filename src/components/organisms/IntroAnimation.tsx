@@ -13,8 +13,7 @@ const IntroAnimation: React.FC<IntroAnimationProps> = ({ onComplete }) => {
   const logoWrapperRef = useRef<HTMLDivElement>(null);
   const logoBorderRef = useRef<HTMLDivElement>(null);
   const logoBorderInnerRef = useRef<HTMLDivElement>(null);
-  const modTextRef = useRef<HTMLDivElement>(null);
-  const capitalTextRef = useRef<HTMLDivElement>(null);
+  const logoTextRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
     // Check for reduced motion preference
@@ -44,35 +43,6 @@ const IntroAnimation: React.FC<IntroAnimationProps> = ({ onComplete }) => {
         }
       });
       
-      // Create letter arrays for text animation
-      const modLetters = Array.from("MOD");
-      const capitalLetters = Array.from("CAPITAL");
-      
-      // Update DOM to have spans for each letter
-      if (modTextRef.current) {
-        modTextRef.current.innerHTML = '';
-        modLetters.forEach(letter => {
-          const span = document.createElement('span');
-          span.textContent = letter;
-          span.classList.add('mod-letter');
-          modTextRef.current?.appendChild(span);
-        });
-      }
-      
-      if (capitalTextRef.current) {
-        capitalTextRef.current.innerHTML = '';
-        capitalLetters.forEach(letter => {
-          const span = document.createElement('span');
-          span.textContent = letter;
-          span.classList.add('capital-letter');
-          capitalTextRef.current?.appendChild(span);
-        });
-      }
-      
-      // Get references to all letter spans
-      const modLetterEls = gsap.utils.toArray<HTMLElement>('.mod-letter');
-      const capitalLetterEls = gsap.utils.toArray<HTMLElement>('.capital-letter');
-      
       // Animation sequence
       tl.from([topGradientRef.current, bottomGradientRef.current], { 
         duration: 0.7, 
@@ -96,22 +66,11 @@ const IntroAnimation: React.FC<IntroAnimationProps> = ({ onComplete }) => {
         opacity: 0 
       }, "-=100%")
       .set(logoWrapperRef.current, { opacity: 1 })
-      .from(modLetterEls, { 
-        duration: 0.2, 
-        ease: "back", 
-        filter: "blur(0.3em)", 
-        opacity: 0, 
-        scale: 1.5, 
-        stagger: 0.05 
-      })
-      .from(capitalLetterEls, { 
-        duration: 0.2, 
-        delay: 0.25, 
-        filter: "blur(0.3em)", 
-        opacity: 0, 
-        scale: 0.5, 
-        stagger: 0.02, 
-        xPercent: -25 
+      .from(logoTextRef.current, { 
+        duration: 0.4,
+        opacity: 0,
+        scale: 0.8,
+        ease: "back"
       })
       .from(logoBorderRef.current, { 
         duration: 0.4, 
@@ -143,9 +102,9 @@ const IntroAnimation: React.FC<IntroAnimationProps> = ({ onComplete }) => {
         ease: "power4.in", 
         scale: 15 
       }, "-=60%")
-      .to(logoWrapperRef.current, { 
+      .to(logoTextRef.current, { 
         duration: 0.25, 
-        opacity: 0, 
+        opacity: 0,
         scale: 1.2 
       }, "-=50%");
     }, containerRef);
@@ -192,37 +151,31 @@ const IntroAnimation: React.FC<IntroAnimationProps> = ({ onComplete }) => {
       <div 
         ref={logoWrapperRef} 
         className="relative z-30 opacity-0"
-        style={{ width: '300px', height: '200px' }}
+        style={{ width: '400px', height: '150px' }}
       >
         {/* Logo Border */}
         <div 
           ref={logoBorderRef} 
-          className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-primary rounded-2xl"
+          className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-2xl"
           style={{ width: '140%', height: '160%', zIndex: 1 }}
         ></div>
         
         {/* Logo Border Inner */}
         <div 
           ref={logoBorderInnerRef} 
-          className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-black rounded-2xl"
+          className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-2xl"
           style={{ width: 'calc(140% - 0.5em)', height: 'calc(160% - 0.5em)', zIndex: 2 }}
         ></div>
         
         {/* Logo Text */}
-        <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center z-10">
-          <div 
-            ref={modTextRef} 
-            className="text-primary text-8xl font-bold leading-tight"
-            style={{ height: '120px', lineHeight: '120px' }}
-          >
-            MOD
-          </div>
-          <div 
-            ref={capitalTextRef} 
-            className="text-white text-3xl tracking-widest"
-          >
-            CAPITAL
-          </div>
+        <div 
+          ref={logoTextRef}
+          className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center z-10"
+          style={{ width: '90%' }}
+        >
+          <span className="text-black text-4xl md:text-5xl font-bold">MOD</span>
+          <span className="text-red-600 text-4xl md:text-5xl font-bold mx-2">|</span>
+          <span className="text-gray-600 text-4xl md:text-5xl font-bold">CAPITAL</span>
         </div>
       </div>
     </div>

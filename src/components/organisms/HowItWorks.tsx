@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { FiFileText, FiCheckSquare, FiLifeBuoy, FiDollarSign, FiArrowDown, FiArrowUp } from 'react-icons/fi';
+import { FiFileText, FiCheckSquare, FiLifeBuoy, FiDollarSign, FiArrowDown } from 'react-icons/fi';
 import IconWrapper from '../atoms/IconWrapper';
 
 // Register GSAP plugins
@@ -96,6 +96,19 @@ const HowItWorks: React.FC = () => {
   
   useEffect(() => {
     const ctx = gsap.context(() => {
+      // Section entrance animation
+      gsap.from(sectionRef.current, {
+        opacity: 0,
+        y: 30,
+        duration: 0.8,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 90%",
+          toggleActions: "play none none none"
+        }
+      });
+      
       // Title animation
       if (titleRef.current) {
         // Enhanced title animation with staggered letters
@@ -122,39 +135,31 @@ const HowItWorks: React.FC = () => {
         }
       }
       
-      // Path animation using strokeDasharray and strokeDashoffset
+      // Path subtle wave animation
       if (pathRef.current) {
-        // Get the total length of the path
-        const pathLength = pathRef.current.getTotalLength();
-        
-        // Initialize the path as hidden
+        // Create a subtle wave animation
         gsap.set(pathRef.current, {
-          strokeDasharray: pathLength,
-          strokeDashoffset: pathLength
+          strokeDasharray: "4,16",
+          strokeDashoffset: 0
         });
         
-        // Animate the path drawing as the user scrolls
+        // Animate the stroke-dashoffset for a flowing effect
         gsap.to(pathRef.current, {
-          strokeDashoffset: 0,
-          ease: "none",
+          strokeDashoffset: 20,
+          repeat: -1,
+          duration: 10,
+          ease: "linear"
+        });
+        
+        // Scale up the path on entry
+        gsap.from(pathRef.current, {
+          scaleX: 0,
+          transformOrigin: "left center",
+          duration: 1.2,
+          ease: "power3.out",
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: "top 80%",
-            end: "bottom 70%",
-            scrub: 0.5, // Smoother scrubbing effect
-          }
-        });
-        
-        // Add thickness animation that responds to scroll
-        ScrollTrigger.create({
-          trigger: sectionRef.current,
-          start: "top 80%",
-          end: "bottom 70%",
-          scrub: 0.3,
-          onUpdate: (self) => {
-            // Grow from 2 to 6 pixels as scroll progresses
-            const thickness = 2 + (self.progress * 4);
-            gsap.set(pathRef.current, { strokeWidth: thickness });
+            start: "top 75%",
           }
         });
       }
@@ -169,30 +174,13 @@ const HowItWorks: React.FC = () => {
             y: 20,
             opacity: 0,
             duration: 0.5,
-            delay: 0.1 + (index * 0.1),
+            delay: 0.3 + (index * 0.2),
             scrollTrigger: {
               trigger: sectionRef.current,
               start: "top 80%",
               toggleActions: "play none none reverse"
             }
           });
-          
-          // Pulse animation for step number
-          const stepNumber = step.querySelector('.step-number');
-          if (stepNumber) {
-            gsap.to(stepNumber, {
-              scale: 1.2,
-              duration: 0.3,
-              yoyo: true,
-              repeat: 1,
-              delay: 0.3 + (index * 0.1),
-              scrollTrigger: {
-                trigger: sectionRef.current,
-                start: "top 80%",
-                toggleActions: "play none none none"
-              }
-            });
-          }
         });
       }
       
@@ -212,7 +200,7 @@ const HowItWorks: React.FC = () => {
             x: index % 2 === 0 ? -20 : 20,
             opacity: 0,
             duration: 0.4,
-            delay: 0.1 + (index * 0.1),
+            delay: 0.3 + (index * 0.15),
             scrollTrigger: {
               trigger: sectionRef.current,
               start: "top 90%",
@@ -236,6 +224,7 @@ const HowItWorks: React.FC = () => {
     <section 
       ref={sectionRef} 
       className="relative py-10 bg-background overflow-hidden"
+      id="how-it-works"
     >
       {/* Background Elements */}
       <div className="absolute top-0 right-0 w-72 h-72 bg-accent/5 rounded-full -mr-20 -mt-20" />
@@ -259,9 +248,6 @@ const HowItWorks: React.FC = () => {
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
-                  <div className="step-number flex-shrink-0 mr-3 text-primary text-xl font-bold">
-                    {index + 1}
-                  </div>
                   <h3 className="text-lg font-bold text-black">{step.title}</h3>
                 </div>
                 <div className="expand-icon text-primary">
@@ -284,20 +270,13 @@ const HowItWorks: React.FC = () => {
         {/* Desktop View - Horizontal flowing layout */}
         <div className="hidden md:block relative">
           {/* Step Boxes */}
-          <div className="grid grid-cols-4 gap-4 relative pt-8 steps-grid">
+          <div className="grid grid-cols-4 gap-4 relative steps-grid">
             {steps.map((step, index) => (
               <div 
                 key={index}
                 ref={addToStepsRef}
                 className="flex flex-col items-center"
               >
-                {/* Circle with number */}
-                <div 
-                  className="step-number text-primary text-xl font-bold mb-4 z-10"
-                >
-                  {index + 1}
-                </div>
-                
                 {/* Step Icon */}
                 <div className="w-16 h-16 rounded-full bg-accent flex items-center justify-center shadow-lg mb-3">
                   {step.icon}
@@ -319,12 +298,13 @@ const HowItWorks: React.FC = () => {
               viewBox="0 0 1600 120"
               preserveAspectRatio="none"
             >
+              {/* Wavy path */}
               <path
                 ref={pathRef}
                 d="M0,60 C100,30 150,90 200,60 C250,30 300,90 350,60 C400,30 450,90 500,60 C550,30 600,90 650,60 C700,30 750,90 800,60 C850,30 900,90 950,60 C1000,30 1050,90 1100,60 C1150,30 1200,90 1250,60 C1300,30 1350,90 1400,60 C1450,30 1500,90 1550,60 C1600,30 1600,60"
                 fill="none"
                 stroke="#FF0000"
-                strokeWidth="4"
+                strokeWidth="2"
                 strokeLinecap="round"
               />
             </svg>

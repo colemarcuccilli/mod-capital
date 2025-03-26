@@ -23,11 +23,26 @@ const Home: React.FC = () => {
       if (window.innerWidth >= 768) {
         ScrollTrigger.create({
           trigger: howItWorksSectionRef.current,
-          start: 'top top',
-          endTrigger: fundingTypesSectionRef.current,
-          end: 'bottom bottom',
-          pin: true,
-          pinSpacing: false
+          start: "top 100%",
+          end: "bottom -200px", // Delay fade-out by changing from -10px to -200px
+          scrub: true,
+          onUpdate: (self) => {
+            // Ensure the opacity only starts to decrease when the section is leaving the viewport
+            if (self.progress > 0.7) { // Changed from 0.5 to 0.7 to delay the fade effect
+              const opacity = gsap.utils.clamp(0, 1, gsap.utils.mapRange(0.7, 1, 1, 0, self.progress));
+              gsap.to(howItWorksSectionRef.current, {
+                opacity,
+                duration: 0.1,
+                overwrite: true
+              });
+            } else {
+              gsap.to(howItWorksSectionRef.current, {
+                opacity: 1,
+                duration: 0.1,
+                overwrite: true
+              });
+            }
+          }
         });
       
         // Add opacity transitions between sections
@@ -65,7 +80,7 @@ const Home: React.FC = () => {
       />
       
       <div ref={howItWorksSectionRef}>
-        <MoneyMolecule />
+        <HowItWorks />
       </div>
       
       <div ref={fundingTypesSectionRef}>

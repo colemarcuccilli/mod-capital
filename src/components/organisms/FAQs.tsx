@@ -351,10 +351,10 @@ const FAQs: React.FC = () => {
     <section 
       ref={sectionRef}
       id="faqs"
-      className="relative py-20 bg-gradient-to-b from-gray-50 to-gray-100 overflow-hidden"
+      className="relative py-20 bg-red-50 overflow-hidden"
     >
       {/* Particle Background */}
-      <div className="absolute inset-0 pointer-events-none">
+      <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-red-50 to-red-100">
         {[...Array(15)].map((_, i) => (
           <div 
             key={i}

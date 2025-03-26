@@ -142,43 +142,24 @@ const Footer: React.FC = () => {
   };
   
   return (
-    <footer ref={footerRef} className="relative bg-primary text-white pt-16 pb-8 mt-0">
-      {/* Wave SVG */}
-      <svg 
-        ref={waveRef}
-        className="absolute -top-24 left-0 w-full"
-        height="110" 
-        viewBox="0 0 1440 110" 
-        fill="none" 
-        preserveAspectRatio="none"
-      >
-        <path 
-          d="M0,40 C240,100 480,0 720,80 C960,160 1200,40 1440,80 L1440,220 L0,220 Z" 
-          fill="#1E3A8A"
-        />
-      </svg>
-      
-      <div className="container relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12 mb-16">
-          {/* Column 1: Logo and Description */}
-          <div ref={addToColumnRefs} className="space-y-6">
-            <Logo className="text-white mb-4" />
-            <p className="text-white/80">
-              Connecting real estate investors with private lenders for creative financing solutions.
+    <footer className="bg-gray-900 text-white relative">
+      <div className="container mx-auto px-4 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div className="col-span-1 md:col-span-2">
+            <div className="flex items-center mb-6">
+              <img src="/logo.png" alt="Mod Capital Logo" className="h-8 w-auto" />
+            </div>
+            <p className="text-gray-400 mb-6">
+              Empowering businesses with innovative funding solutions. Fast, reliable, and tailored to your needs.
             </p>
-            
-            {/* Social Media Icons */}
-            <div className="flex space-x-4 pt-2">
-              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="social-icon w-10 h-10 flex items-center justify-center bg-primary-dark rounded-full hover:bg-accent transition-colors duration-300">
+            <div className="flex space-x-4">
+              <a href="#" className="text-gray-400 hover:text-white transition-colors">
                 {facebookIcon}
               </a>
-              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="social-icon w-10 h-10 flex items-center justify-center bg-primary-dark rounded-full hover:bg-accent transition-colors duration-300">
+              <a href="#" className="text-gray-400 hover:text-white transition-colors">
                 {twitterIcon}
               </a>
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="social-icon w-10 h-10 flex items-center justify-center bg-primary-dark rounded-full hover:bg-accent transition-colors duration-300">
-                {instagramIcon}
-              </a>
-              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="social-icon w-10 h-10 flex items-center justify-center bg-primary-dark rounded-full hover:bg-accent transition-colors duration-300">
+              <a href="#" className="text-gray-400 hover:text-white transition-colors">
                 {linkedinIcon}
               </a>
             </div>
