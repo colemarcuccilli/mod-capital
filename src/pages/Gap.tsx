@@ -66,8 +66,8 @@ const Gap: React.FC = () => {
       answer: "Gap funding provides the capital needed to 'bridge the gap' between your primary financing (like a mortgage or hard money loan) and the total funds required for your real estate project. It's typically short-term financing used until a more permanent solution is secured."
     },
     {
-      question: "How quickly can I access gap funding?",
-      answer: "With Mod Capital, most gap funding solutions can be approved and funded within 3-5 business days, depending on the complexity of the transaction and the completeness of your documentation."
+      question: "How fast can I get approved for gap funding?",
+      answer: "With Domentra, most gap funding solutions can be approved and funded within 3-5 business days, depending on the complexity of the transaction and the completeness of your documentation."
     },
     {
       question: "What's the maximum amount of gap funding available?",
@@ -297,7 +297,7 @@ const Gap: React.FC = () => {
                 
                 <div className="text-center mt-4">
                   <span className="text-2xl font-bold text-accent">{sliderValue}%</span>
-                  <span className="text-gray-600"> of gap funded by Mod Capital</span>
+                  <span className="text-gray-600"> of gap funded by Domentra</span>
                 </div>
               </div>
             </div>

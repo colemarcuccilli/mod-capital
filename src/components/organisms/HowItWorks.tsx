@@ -38,22 +38,22 @@ const HowItWorks: React.FC = () => {
   
   const steps: Step[] = [
     {
-      icon: <IconWrapper name="FiFileText" size={24} className="text-white" />,
+      icon: <IconWrapper name="FiFileText" size={24} className="text-background" />,
       title: "Request Funding",
       description: "Submit your funding request through our simple online form to start quickly"
     },
     {
-      icon: <IconWrapper name="FiCheckSquare" size={24} className="text-white" />,
+      icon: <IconWrapper name="FiCheckSquare" size={24} className="text-background" />,
       title: "Funding Terms",
       description: "We'll create a funding agreement with clear terms and manageable conditions"
     },
     {
-      icon: <IconWrapper name="FiLifeBuoy" size={24} className="text-white" />,
+      icon: <IconWrapper name="FiLifeBuoy" size={24} className="text-background" />,
       title: "Funding Review",
       description: "Our team will review and validate your funding needs within 24 hours"
     },
     {
-      icon: <IconWrapper name="FiDollarSign" size={24} className="text-white" />,
+      icon: <IconWrapper name="FiDollarSign" size={24} className="text-background" />,
       title: "Fast Funding",
       description: "Receive your funding within 48 hours or less to your preferred account"
     }
@@ -233,14 +233,14 @@ const HowItWorks: React.FC = () => {
   return (
     <section 
       ref={sectionRef}
-      className="relative py-20 md:py-32 bg-white"
+      className="relative py-20 md:py-32 bg-background"
       id="how-it-works"
     >
       {/* Subtle background decorations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-gray-50 to-transparent"></div>
-        <div className="absolute top-1/4 -left-10 w-40 h-40 rounded-full bg-red-50 blur-xl opacity-50"></div>
-        <div className="absolute bottom-1/4 -right-10 w-60 h-60 rounded-full bg-red-100 blur-xl opacity-30"></div>
+        <div className="absolute top-1/4 -left-10 w-40 h-40 rounded-full bg-accent-secondary/10 blur-xl opacity-50"></div>
+        <div className="absolute bottom-1/4 -right-10 w-60 h-60 rounded-full bg-accent/10 blur-xl opacity-30"></div>
       </div>
       
       <div className="container relative z-10">
@@ -258,24 +258,19 @@ const HowItWorks: React.FC = () => {
               <div 
                 key={index} 
                 ref={addToMobileStepsRef}
-                className="bg-white rounded-xl shadow-md p-4 cursor-pointer hover:shadow-lg transition-shadow duration-300"
+                className="bg-background rounded-xl shadow-md p-4 cursor-pointer hover:shadow-lg transition-shadow duration-300"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
-                    <h3 className="text-lg font-bold text-black">{step.title}</h3>
-                  </div>
-                  <div className="expand-icon text-primary">
-                    <IconWrapper name="FiArrowDown" size={20} />
-                  </div>
-                </div>
-                
-                <div className="step-details overflow-hidden mt-2 opacity-0 h-0">
-                  <div className="flex items-start pt-2 border-t border-gray-100 mt-2">
                     <div className="w-10 h-10 rounded-full bg-accent mr-3 flex-shrink-0 flex items-center justify-center">
                       {step.icon}
                     </div>
-                    <p className="text-gray-600 text-sm pt-2">{step.description}</p>
+                    <h3 className="text-lg font-semibold text-primary">{step.title}</h3>
                   </div>
+                  <IconWrapper name="FiArrowDown" size={20} className="expand-icon text-primary" />
+                </div>
+                <div className="step-details overflow-hidden mt-2 pl-13">
+                  <p className="text-primary/80 text-sm pt-2">{step.description}</p>
                 </div>
               </div>
             ))}
@@ -289,7 +284,7 @@ const HowItWorks: React.FC = () => {
                 <div 
                   key={index}
                   ref={addToStepsRef}
-                  className="flex flex-col items-center"
+                  className="flex flex-col items-center pt-6 relative text-center"
                 >
                   {/* Step Icon */}
                   <div className="w-16 h-16 rounded-full bg-accent flex items-center justify-center shadow-lg mb-3">
@@ -298,8 +293,8 @@ const HowItWorks: React.FC = () => {
                   
                   {/* Content */}
                   <div className="text-center px-4">
-                    <h3 className="text-lg font-bold text-black mb-1">{step.title}</h3>
-                    <p className="text-gray-600 text-sm mb-1">{step.description}</p>
+                    <h3 className="text-lg font-bold text-primary mb-1">{step.title}</h3>
+                    <p className="text-primary/80 text-sm mb-1">{step.description}</p>
 
                     {/* Triangle under each step */}
                     <svg 
@@ -310,7 +305,7 @@ const HowItWorks: React.FC = () => {
                       <polygon 
                         points="45,20 50,10 55,20" 
                         fill="none" 
-                        stroke="rgba(255, 0, 0, 0.6)" 
+                        stroke="rgba(255, 102, 102, 0.6)"
                         strokeWidth="1" 
                         className="step-triangle"
                       />

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
-import Logo from '../atoms/Logo';
+import domentraIconPoix from '../../assets/images/logos/DomentraIconPhoix.svg';
 
 interface IntroAnimationProps {
   onComplete: () => void;
@@ -8,7 +8,7 @@ interface IntroAnimationProps {
 
 const IntroAnimation: React.FC<IntroAnimationProps> = ({ onComplete }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const greenFilterRef = useRef<HTMLDivElement>(null);
+  const poixFilterRef = useRef<HTMLDivElement>(null);
   const topGradientRef = useRef<HTMLDivElement>(null);
   const bottomGradientRef = useRef<HTMLDivElement>(null);
   const logoWrapperRef = useRef<HTMLDivElement>(null);
@@ -17,20 +17,15 @@ const IntroAnimation: React.FC<IntroAnimationProps> = ({ onComplete }) => {
   const logoRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
-    // Check for reduced motion preference
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    
     if (prefersReducedMotion) {
-      // Skip animation for accessibility
       onComplete();
       return;
     }
     
     const ctx = gsap.context(() => {
-      // Hulu-style animation sequence
       const tl = gsap.timeline({
         onComplete: () => {
-          // When animation is done, hide everything and call onComplete
           gsap.to(containerRef.current, {
             autoAlpha: 0,
             duration: 0.5,
@@ -44,19 +39,18 @@ const IntroAnimation: React.FC<IntroAnimationProps> = ({ onComplete }) => {
         }
       });
       
-      // Animation sequence
       tl.from([topGradientRef.current, bottomGradientRef.current], { 
         duration: 0.7, 
         ease: "power3.inOut", 
         filter: "blur(0px)", 
         opacity: 0 
       })
-      .from(greenFilterRef.current, { 
+      .from(poixFilterRef.current, { 
         duration: 0.8, 
         opacity: 0, 
         scale: 3 
       }, "-=50%")
-      .to(greenFilterRef.current, { 
+      .to(poixFilterRef.current, { 
         duration: 0.25, 
         opacity: 0, 
         scale: 3 
@@ -77,12 +71,14 @@ const IntroAnimation: React.FC<IntroAnimationProps> = ({ onComplete }) => {
         duration: 0.4, 
         ease: "power3.out", 
         opacity: 0, 
-        scale: 0.75 
+        scale: 0.75,
+        backgroundColor: '#FF6666'
       }, "-=100%")
       .from(logoBorderInnerRef.current, { 
         duration: 0.4, 
         ease: "power3.out", 
-        scale: 0.75 
+        scale: 0.75,
+        backgroundColor: '#FFFFFA'
       }, "-=100%")
       .to(logoWrapperRef.current, { 
         duration: 1.5, 
@@ -118,24 +114,22 @@ const IntroAnimation: React.FC<IntroAnimationProps> = ({ onComplete }) => {
   return (
     <div 
       ref={containerRef}
-      className="fixed inset-0 w-screen h-screen z-50 flex items-center justify-center bg-black overflow-hidden"
+      className="fixed inset-0 w-screen h-screen z-50 flex items-center justify-center bg-primary overflow-hidden"
       style={{ position: 'fixed' }}
     >
-      {/* Red Filter (previously green) */}
       <div 
-        ref={greenFilterRef} 
+        ref={poixFilterRef} 
         className="absolute inset-0 z-10"
         style={{
-          background: "radial-gradient(rgba(255, 0, 0, 0.05), rgba(255, 0, 0, 0.4) 80%)"
+          background: "radial-gradient(rgba(201, 87, 229, 0.05), rgba(201, 87, 229, 0.4) 80%)"
         }}
       ></div>
       
-      {/* Animated Gradients */}
       <div 
         ref={topGradientRef}
         className="absolute top-[-50px] w-[110%] h-[100px] left-[-5%] z-20"
         style={{ 
-          background: "linear-gradient(to right, rgba(220, 38, 38, 0.75) 0% 10%, transparent 10% 20%, rgba(171, 111, 218, 0.5) 20% 50%, rgba(220, 38, 38, 0.5) 50% 70%, rgba(255, 0, 0, 0.75) 70%)",
+          background: "linear-gradient(to right, rgba(255, 102, 102, 0.7) 0% 20%, transparent 20% 40%, rgba(197, 216, 109, 0.5) 40% 70%, rgba(255, 102, 102, 0.6) 70%)",
           filter: "blur(3em)"
         }}
       ></div>
@@ -143,38 +137,37 @@ const IntroAnimation: React.FC<IntroAnimationProps> = ({ onComplete }) => {
         ref={bottomGradientRef}
         className="absolute bottom-[-50px] w-[110%] h-[100px] left-[-5%] z-20"
         style={{ 
-          background: "linear-gradient(to right, rgba(220, 38, 38, 0.75) 0% 10%, transparent 10% 30%, rgba(220, 38, 38, 0.5) 30% 50%, transparent 50% 70%, rgba(171, 111, 218, 0.5) 70% 80%, transparent 80%)",
+          background: "linear-gradient(to right, rgba(201, 87, 229, 0.6) 0% 30%, transparent 30% 50%, rgba(255, 102, 102, 0.5) 50% 80%, transparent 80%)",
           filter: "blur(3em)"
         }}
       ></div>
       
-      {/* Logo Wrapper */}
       <div 
         ref={logoWrapperRef} 
-        className="relative z-30 opacity-0"
-        style={{ width: '400px', height: '150px' }}
+        className="relative z-30 opacity-0 flex items-center justify-center"
+        style={{ width: '150px', height: '150px' }}
       >
-        {/* Logo Border */}
         <div 
           ref={logoBorderRef} 
-          className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-2xl"
+          className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-accent rounded-2xl"
           style={{ width: '140%', height: '160%', zIndex: 1 }}
         ></div>
         
-        {/* Logo Border Inner */}
         <div 
           ref={logoBorderInnerRef} 
-          className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-2xl"
+          className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-background rounded-2xl"
           style={{ width: 'calc(140% - 0.5em)', height: 'calc(160% - 0.5em)', zIndex: 2 }}
         ></div>
         
-        {/* Logo */}
         <div 
           ref={logoRef}
-          className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center z-10"
-          style={{ width: '90%' }}
+          className="absolute inset-0 flex items-center justify-center z-10 p-4"
         >
-          <Logo className="w-60 h-auto" />
+          <img 
+            src={domentraIconPoix} 
+            alt="Domentra Loading" 
+            className="w-full h-full object-contain"
+          />
         </div>
       </div>
     </div>

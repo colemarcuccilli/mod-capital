@@ -6,14 +6,15 @@ module.exports = {
     theme: {
         extend: {
             colors: {
-                primary: '#BC0000',
-                secondary: '#0F172A',
-                accent: '#FF0000',
-                background: '#F8FAFC',
+                primary: '#0D1321', // Rich Black
+                secondary: '#C957E5', // Poix
+                accent: '#FF6666', // Bittersweet
+                'accent-secondary': '#C5D86D', // Mindaro
+                background: '#FFFFFA', // Baby Powder
             },
             fontFamily: {
-                sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-                montserrat: ['Montserrat', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+                sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'], // Keep Inter as fallback
+                montserrat: ['Montserrat', 'ui-sans-serif', 'system-ui', 'sans-serif'], // Keep Montserrat as fallback
             },
         },
         container: {

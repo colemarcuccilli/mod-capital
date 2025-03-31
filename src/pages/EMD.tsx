@@ -82,8 +82,8 @@ const EMD: React.FC = () => {
       answer: "EMD (Earnest Money Deposit) funding is a financial solution that provides the capital needed for the deposit that secures a real estate contract. This allows investors to secure properties without using their own capital."
     },
     {
-      question: "How much of my earnest money deposit can be funded?",
-      answer: "Mod Capital can fund up to 100% of your earnest money deposit, depending on the deal's specifics and property valuation."
+      question: "How much EMD will you fund?",
+      answer: "Domentra can fund up to 100% of your earnest money deposit, depending on the deal's specifics and property valuation."
     },
     {
       question: "How quickly can I get EMD funding?",
@@ -158,7 +158,7 @@ const EMD: React.FC = () => {
             EMD <span className="text-accent">Calculator</span>
           </h2>
           <p className="text-center text-gray-600 max-w-3xl mx-auto mb-12">
-            Use our calculator to determine how much earnest money deposit you'll need for your next deal, and how much Mod Capital can fund for you.
+            Use our calculator to determine how much earnest money deposit you'll need for your next deal, and how much Domentra can fund for you.
           </p>
           
           <div className="bg-white rounded-xl shadow-lg p-8 md:p-10 max-w-4xl mx-auto">
@@ -208,7 +208,7 @@ const EMD: React.FC = () => {
                 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Funding Percentage from Mod Capital
+                    Funding Percentage from Domentra
                   </label>
                   <div className="relative mt-1 rounded-md shadow-sm">
                     <input
@@ -238,7 +238,7 @@ const EMD: React.FC = () => {
                   </div>
                   
                   <div>
-                    <p className="text-sm text-gray-500">Amount Funded by Mod Capital:</p>
+                    <p className="text-sm text-gray-500">Amount Funded by Domentra:</p>
                     <p className="text-2xl font-bold text-accent">{fundingAmount}</p>
                   </div>
                   
@@ -249,7 +249,7 @@ const EMD: React.FC = () => {
                   
                   <div className="pt-4 mt-4 border-t border-gray-200">
                     <p className="text-sm text-gray-600">
-                      With Mod Capital's EMD funding, you can secure properties with minimal cash outlay, preserving your capital for other investments or improvements.
+                      With Domentra's EMD funding, you can secure properties with minimal cash outlay, preserving your capital for other investments or improvements.
                     </p>
                   </div>
                   

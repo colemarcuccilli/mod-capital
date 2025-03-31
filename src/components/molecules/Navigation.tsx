@@ -88,10 +88,10 @@ const Navigation: React.FC<NavigationProps> = ({ className = '' }) => {
   // Element variables for the icons
   const chevronDownIcon = <IconWrapper 
     name="FiChevronDown" 
-    className={`transition-transform duration-300 ${fundingDropdownOpen ? 'rotate-180' : ''}`} 
+    className={`text-primary transition-transform duration-300 ${fundingDropdownOpen ? 'rotate-180' : ''}`} 
   />;
-  const menuIcon = <IconWrapper name="FiMenu" size={24} />;
-  const closeIcon = <IconWrapper name="FiX" size={24} />;
+  const menuIcon = <IconWrapper name="FiMenu" size={24} className="text-primary" />;
+  const closeIcon = <IconWrapper name="FiX" size={24} className="text-primary" />;
   
   return (
     <nav className={`relative ${className}`}>
@@ -101,7 +101,7 @@ const Navigation: React.FC<NavigationProps> = ({ className = '' }) => {
           <li key={index}>
             <Link 
               to={link.path}
-              className="text-gray-700 hover:text-accent transition-colors duration-300"
+              className="text-primary hover:text-accent transition-colors duration-300"
             >
               {link.name}
             </Link>
@@ -111,7 +111,7 @@ const Navigation: React.FC<NavigationProps> = ({ className = '' }) => {
         {/* Funding Types Dropdown */}
         <li className="relative">
           <button
-            className="flex items-center space-x-1 text-gray-700 hover:text-accent transition-colors duration-300"
+            className="flex items-center space-x-1 text-primary hover:text-accent transition-colors duration-300"
             onClick={() => setFundingDropdownOpen(!fundingDropdownOpen)}
           >
             <span>Get Funding</span>
@@ -120,7 +120,7 @@ const Navigation: React.FC<NavigationProps> = ({ className = '' }) => {
           
           <div 
             ref={fundingDropdownRef}
-            className="absolute top-full left-0 w-60 mt-2 bg-white shadow-lg rounded-md overflow-hidden z-10 opacity-0 h-0"
+            className="absolute top-full left-0 w-60 mt-2 bg-background shadow-lg rounded-md overflow-hidden z-10 opacity-0 h-0 text-primary"
             style={{ pointerEvents: fundingDropdownOpen ? 'auto' : 'none' }}
           >
             <ul className="py-2">
@@ -128,7 +128,7 @@ const Navigation: React.FC<NavigationProps> = ({ className = '' }) => {
                 <li key={index}>
                   <Link 
                     to={type.path}
-                    className="block px-4 py-2 hover:bg-primary hover:text-white transition-colors duration-200"
+                    className="block px-4 py-2 hover:bg-primary hover:text-background transition-colors duration-200"
                     onClick={() => setFundingDropdownOpen(false)}
                   >
                     {type.name}
@@ -142,7 +142,7 @@ const Navigation: React.FC<NavigationProps> = ({ className = '' }) => {
       
       {/* Mobile Menu Button */}
       <button 
-        className="md:hidden text-gray-700 hover:text-accent"
+        className="md:hidden text-primary hover:text-accent"
         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
       >
         {mobileMenuOpen ? closeIcon : menuIcon}
@@ -151,7 +151,7 @@ const Navigation: React.FC<NavigationProps> = ({ className = '' }) => {
       {/* Mobile Menu */}
       <div 
         ref={mobileMenuRef}
-        className={`absolute top-full right-0 w-full bg-white shadow-lg rounded-md mt-2 py-4 z-20 md:hidden transform opacity-0 -translate-y-5`}
+        className={`absolute top-full right-0 w-full bg-background shadow-lg rounded-md mt-2 py-4 z-20 md:hidden transform opacity-0 -translate-y-5 text-primary`}
         style={{ display: mobileMenuOpen ? 'block' : 'none' }}
       >
         <ul className="space-y-2">

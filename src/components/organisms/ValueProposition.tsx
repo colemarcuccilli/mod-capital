@@ -83,9 +83,9 @@ const ValueProposition: React.FC = () => {
       <div className="container">
         <h2 
           ref={titleRef}
-          className="text-3xl md:text-4xl font-bold text-center mb-16"
+          className="text-3xl md:text-4xl font-bold text-center mb-12 text-primary"
         >
-          Why Choose <span className="text-accent">Mod Capital</span>
+          Why Choose <span className="text-accent">Domentra</span>
         </h2>
         
         <div 

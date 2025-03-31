@@ -141,134 +141,107 @@ const Footer: React.FC = () => {
     });
   };
   
+  const currentYear = new Date().getFullYear();
+  
+  const socialLinks = [
+    { name: 'Facebook', icon: 'FiFacebook', url: 'https://facebook.com' },
+    { name: 'Twitter', icon: 'FiTwitter', url: 'https://twitter.com' },
+    { name: 'LinkedIn', icon: 'FiLinkedin', url: 'https://linkedin.com' },
+    { name: 'Instagram', icon: 'FiInstagram', url: 'https://instagram.com' }
+  ];
+
+  const footerLinks = [
+    {
+      title: 'Funding',
+      links: [
+        { name: 'Double Close', path: '/double-close' },
+        { name: 'EMD Funding', path: '/emd' },
+        { name: 'Gap Funding', path: '/gap' },
+        { name: 'Private Money', path: '/private-money' }
+      ]
+    },
+    {
+      title: 'Company',
+      links: [
+        { name: 'About Us', path: '/about' },
+        { name: 'Contact', path: '/contact' },
+        { name: 'Referrals', path: '/referrals' },
+        // { name: 'Blog', path: '/blog' }
+      ]
+    },
+    {
+      title: 'Legal',
+      links: [
+        { name: 'Privacy Policy', path: '/privacy' },
+        { name: 'Terms of Service', path: '/terms' }
+      ]
+    }
+  ];
+  
   return (
-    <footer className="bg-gray-900 text-white relative">
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div className="col-span-1 md:col-span-1">
-            <div className="flex items-center mb-6">
-              <Logo className="w-40 h-auto" />
+    <footer className="bg-primary text-background py-16 relative">
+      <div className="container mx-auto px-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 gap-12">
+          {/* Logo and Description */}
+          <div className="lg:col-span-2">
+            <div className="mb-6">
+              <Link to="/">
+                <Logo className="h-12" />
+              </Link>
             </div>
-            <p className="text-gray-400 mb-6">
-              Empowering businesses with innovative funding solutions. Fast, reliable, and tailored to your needs.
+            <p className="text-background/80 mb-6 max-w-md">
+              Empowering real estate investors with innovative funding solutions. Fast, reliable, and tailored to your needs.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-gray-400 hover:text-red-500 transition-colors">
-                {facebookIcon}
-              </a>
-              <a href="#" className="text-gray-400 hover:text-red-500 transition-colors">
-                {twitterIcon}
-              </a>
-              <a href="#" className="text-gray-400 hover:text-red-500 transition-colors">
-                {linkedinIcon}
-              </a>
+              {socialLinks.map(link => (
+                <a 
+                  key={link.name} 
+                  href={link.url} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-background/60 hover:text-accent transition-colors duration-300"
+                >
+                  <IconWrapper name={link.icon} size={24} />
+                </a>
+              ))}
             </div>
           </div>
-          
-          {/* Column 2: Funding Types */}
-          <div ref={addToColumnRefs}>
-            <h3 className="text-xl font-bold mb-6 border-b border-white/20 pb-2">Funding Types</h3>
-            <ul className="space-y-3">
-              <li>
-                <Link to="/double-close" className="inline-block text-white/80 hover:text-accent transition-colors hover:translate-x-1 transform duration-200">
-                  Double Close
-                </Link>
-              </li>
-              <li>
-                <Link to="/emd" className="inline-block text-white/80 hover:text-accent transition-colors hover:translate-x-1 transform duration-200">
-                  EMD
-                </Link>
-              </li>
-              <li>
-                <Link to="/gap" className="inline-block text-white/80 hover:text-accent transition-colors hover:translate-x-1 transform duration-200">
-                  Gap Funding
-                </Link>
-              </li>
-              <li>
-                <Link to="/private-money" className="inline-block text-white/80 hover:text-accent transition-colors hover:translate-x-1 transform duration-200">
-                  Private Money Loans
-                </Link>
-              </li>
-            </ul>
-          </div>
-          
-          {/* Column 3: Company */}
-          <div ref={addToColumnRefs}>
-            <h3 className="text-xl font-bold mb-6 border-b border-white/20 pb-2">Company</h3>
-            <ul className="space-y-3">
-              <li>
-                <Link to="/about" className="inline-block text-white/80 hover:text-accent transition-colors hover:translate-x-1 transform duration-200">
-                  About Us
-                </Link>
-              </li>
-              <li>
-                <Link to="/contact" className="inline-block text-white/80 hover:text-accent transition-colors hover:translate-x-1 transform duration-200">
-                  Contact
-                </Link>
-              </li>
-              <li>
-                <Link to="/testimonials" className="inline-block text-white/80 hover:text-accent transition-colors hover:translate-x-1 transform duration-200">
-                  Testimonials
-                </Link>
-              </li>
-              <li>
-                <Link to="/blog" className="inline-block text-white/80 hover:text-accent transition-colors hover:translate-x-1 transform duration-200">
-                  Blog
-                </Link>
-              </li>
-            </ul>
-          </div>
-          
-          {/* Column 4: Contact */}
-          <div ref={addToColumnRefs}>
-            <h3 className="text-xl font-bold mb-6 border-b border-white/20 pb-2">Contact Us</h3>
-            <ul className="space-y-3">
-              <li className="text-white/80 flex items-start">
-                <span className="inline-block mt-1 mr-2">📍</span>
-                <span>123 Finance Street, Suite 100<br/>New York, NY 10001</span>
-              </li>
-              <li>
-                <a href="tel:+1234567890" className="inline-flex items-center text-white/80 hover:text-accent transition-colors">
-                  <span className="mr-2">📞</span> (123) 456-7890
-                </a>
-              </li>
-              <li>
-                <a href="mailto:info@modcapital.com" className="inline-flex items-center text-white/80 hover:text-accent transition-colors">
-                  <span className="mr-2">✉️</span> info@modcapital.com
-                </a>
-              </li>
-            </ul>
-          </div>
+
+          {/* Footer Links */}
+          {footerLinks.map((section, index) => (
+            <div key={index}>
+              <h4 className="font-semibold text-background mb-4">{section.title}</h4>
+              <ul className="space-y-2">
+                {section.links.map(link => (
+                  <li key={link.name}>
+                    <Link 
+                      to={link.path}
+                      className="text-background/80 hover:text-accent transition-colors duration-300"
+                    >
+                      {link.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
-        
-        {/* Divider */}
-        <hr className="border-white/10 mb-8" />
-        
-        {/* Bottom Area */}
-        <div className="flex flex-col md:flex-row justify-between items-center">
-          <p className="text-white/60 mb-4 md:mb-0">
-            &copy; {new Date().getFullYear()} Mod Capital. All rights reserved.
+
+        <div className="text-center border-t border-background/10 pt-8 mt-12">
+          <p className="text-sm text-background/60">
+            &copy; {currentYear} Domentra. All rights reserved.
           </p>
-          
-          <div className="flex space-x-6">
-            <Link to="/privacy" className="text-white/60 hover:text-accent transition-colors text-sm">
-              Privacy Policy
-            </Link>
-            <Link to="/terms" className="text-white/60 hover:text-accent transition-colors text-sm">
-              Terms of Service
-            </Link>
-          </div>
         </div>
       </div>
       
       {/* Back to top button */}
       <button
         ref={backToTopRef}
-        className="fixed bottom-8 right-8 w-12 h-12 rounded-full bg-accent text-white shadow-xl flex items-center justify-center opacity-0 invisible transition-all z-50 hover:bg-accent/90"
+        className="fixed bottom-8 right-8 w-12 h-12 rounded-full bg-accent text-background shadow-xl flex items-center justify-center opacity-0 invisible transition-all z-50 hover:bg-accent/90"
         onClick={handleBackToTop}
         aria-label="Back to top"
       >
-        {arrowUpIcon}
+        <IconWrapper name="FiArrowUp" size={20} />
       </button>
     </footer>
   );

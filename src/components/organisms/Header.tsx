@@ -1,5 +1,7 @@
 import React, { useEffect, useRef } from 'react';
-import Logo from '../atoms/Logo';
+import { Link } from 'react-router-dom';
+// import Logo from '../atoms/Logo'; // Remove static logo import
+import AnimatedDomentraLogo from '../atoms/AnimatedDomentraLogo'; // Import animated logo
 import Navigation from '../molecules/Navigation';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -11,31 +13,30 @@ const Header: React.FC = () => {
   const headerRef = useRef<HTMLElement>(null);
   
   useEffect(() => {
-    // Initial animation
+    // Existing header animation/scroll logic... 
+    // It's important this doesn't conflict with the logo animation start.
+    // Ensure header initial animation is quick or logo animation delay accounts for it.
     if (headerRef.current) {
       gsap.from(headerRef.current, {
         y: -100,
         opacity: 0,
-        duration: 0.8,
+        duration: 0.5, // Faster header entrance
         ease: 'power3.out'
       });
     }
     
-    // Header scroll effect
     const header = headerRef.current;
-    
     if (header) {
       ScrollTrigger.create({
         start: 'top top',
-        end: 99999, // A large number to keep it active
+        end: 99999, 
         onUpdate: (self) => {
           const scrolled = self.progress > 0;
-          
           if (scrolled) {
-            header.classList.add('bg-white', 'shadow-md');
+            header.classList.add('bg-background', 'shadow-md');
             header.classList.remove('bg-transparent');
           } else {
-            header.classList.remove('bg-white', 'shadow-md');
+            header.classList.remove('bg-background', 'shadow-md');
             header.classList.add('bg-transparent');
           }
         }
@@ -51,10 +52,12 @@ const Header: React.FC = () => {
   return (
     <header 
       ref={headerRef}
-      className="fixed top-0 left-0 right-0 z-30 transition-all duration-300 py-3"
+      // Start transparent, transition to background color on scroll
+      className="fixed top-0 left-0 right-0 z-30 transition-colors duration-300 py-3 bg-transparent"
     >
       <div className="container flex justify-between items-center">
-        <Logo />
+        {/* Use AnimatedDomentraLogo directly (it contains the Link) */}
+        <AnimatedDomentraLogo className="h-10 md:h-12" />
         <Navigation />
       </div>
     </header>

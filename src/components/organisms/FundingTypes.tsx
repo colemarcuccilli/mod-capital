@@ -39,28 +39,28 @@ const FundingTypes: React.FC = () => {
       description: "Fund two transactions seamlessly with our double closing solutions.",
       icon: "🏠🔄🏠",
       path: "/double-close",
-      color: "from-red-500 to-red-700"
+      color: "from-accent to-secondary"
     },
     {
       title: "EMD Funding",
       description: "Secure your real estate deals with earnest money deposit funding.",
       icon: "💰🔒",
       path: "/emd",
-      color: "from-red-400 to-red-600"
+      color: "from-accent to-accent-secondary"
     },
     {
       title: "Gap Funding",
       description: "Bridge the gap in your real estate financing with flexible terms.",
       icon: "🌉💵",
       path: "/gap",
-      color: "from-red-600 to-red-800"
+      color: "from-secondary to-accent-secondary"
     },
     {
-      title: "Private Money Funding",
+      title: "Private Money Loans",
       description: "Access our network of private lenders for your real estate projects.",
       icon: "🏦🤝",
       path: "/private-money",
-      color: "from-red-500 to-red-700"
+      color: "from-accent to-secondary"
     }
   ];
   
@@ -205,7 +205,11 @@ const FundingTypes: React.FC = () => {
   const arrowRightIcon = <IconWrapper name="FiArrowRight" />;
   
   return (
-    <section ref={sectionRef} className="relative py-20 md:py-32 bg-white" id="funding-types">
+    <section 
+      ref={sectionRef} 
+      className="relative py-20 md:py-32 bg-background" 
+      id="funding-types"
+    >
       {/* Background decorations */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-20 left-0 w-64 h-64 rounded-full bg-primary/5 -ml-32"></div>
@@ -215,7 +219,7 @@ const FundingTypes: React.FC = () => {
       <div className="container relative z-10">
         <h2 
           ref={titleRef}
-          className="text-3xl md:text-4xl font-bold text-center mb-10 text-black"
+          className="text-3xl md:text-4xl font-bold text-center mb-10 text-primary"
         >
           Our <span className="text-accent">Funding</span> Solutions
         </h2>
@@ -228,7 +232,7 @@ const FundingTypes: React.FC = () => {
             <div 
               key={index}
               ref={addToCardRefs}
-              className="funding-card relative h-64 rounded-xl shadow-lg cursor-pointer overflow-hidden bg-white transition-all duration-300"
+              className="funding-card relative h-64 rounded-xl shadow-lg cursor-pointer overflow-hidden bg-background transition-all duration-300 group"
             >
               {/* Card background with gradient */}
               <div className={`absolute inset-0 bg-gradient-to-br ${type.color} opacity-0 transition-opacity duration-300 group-hover:opacity-100`}></div>
@@ -236,14 +240,14 @@ const FundingTypes: React.FC = () => {
               {/* Front content */}
               <div className="card-front-content absolute inset-0 p-5 flex flex-col items-center justify-center text-center z-10">
                 <div className="card-icon text-4xl mb-3">{type.icon}</div>
-                <h3 className="card-title text-xl font-bold mb-2 text-black">{type.title}</h3>
-                <p className="card-desc text-sm text-gray-600">{type.description}</p>
+                <h3 className="card-title text-xl font-bold mb-2 text-primary">{type.title}</h3>
+                <p className="card-desc text-sm text-primary/80">{type.description}</p>
               </div>
               
               {/* Back content */}
-              <div className="card-back-content absolute inset-0 p-5 flex flex-col items-center justify-center text-center bg-white z-10">
+              <div className="card-back-content absolute inset-0 p-5 flex flex-col items-center justify-center text-center bg-background z-10">
                 <h3 className="text-xl font-bold mb-3 text-accent">{type.title}</h3>
-                <p className="text-sm mb-4 text-gray-600">{type.description}</p>
+                <p className="text-sm mb-4 text-primary/80">{type.description}</p>
                 <AnimatedButton 
                   to={type.path}
                   className="card-btn flex items-center justify-center space-x-2 text-sm light-btn"

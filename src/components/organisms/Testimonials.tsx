@@ -11,8 +11,8 @@ gsap.registerPlugin(ScrollTrigger, Draggable);
 interface Testimonial {
   quote: string;
   name: string;
-  position: string;
-  rating: number;
+  title: string;
+  image: string;
 }
 
 const Testimonials: React.FC = () => {
@@ -23,28 +23,28 @@ const Testimonials: React.FC = () => {
   
   const testimonials: Testimonial[] = [
     {
-      quote: "Mod Capital helped me secure funding for my double close in just 3 days. Their network of lenders is impressive!",
-      name: "Michael Turner",
-      position: "Real Estate Investor",
-      rating: 5
+      name: "Sarah Chen",
+      title: "Real Estate Investor",
+      quote: "Domentra helped me secure funding for my double close in just 3 days. Their network of lenders is impressive!",
+      image: "/images/testimonials/sarah-chen.jpg"
     },
     {
-      quote: "I needed gap funding for a complex project, and Mod Capital matched me with the perfect lender. Highly recommend!",
-      name: "Sarah Johnson",
-      position: "Property Developer",
-      rating: 5
+      name: "Michael Ramirez",
+      title: "Property Developer",
+      quote: "I needed gap funding for a complex project, and Domentra matched me with the perfect lender. Highly recommend!",
+      image: "/images/testimonials/michael-ramirez.jpg"
     },
     {
-      quote: "The EMD funding I received through Mod Capital allowed me to secure a competitive property before others could act.",
-      name: "David Chen",
-      position: "Real Estate Entrepreneur",
-      rating: 4
+      name: "David Lee",
+      title: "House Flipper",
+      quote: "The EMD funding I received through Domentra allowed me to secure a competitive property before others could act.",
+      image: "/images/testimonials/david-lee.jpg"
     },
     {
-      quote: "Working with Mod Capital was a game-changer for my investment strategy. Their private money loans have better terms than anything I found elsewhere.",
-      name: "Jennifer Williams",
-      position: "Commercial Investor",
-      rating: 5
+      name: "Jessica Nguyen",
+      title: "Wholesaler",
+      quote: "Working with Domentra was a game-changer for my investment strategy. Their private money loans have better terms than anything I found elsewhere.",
+      image: "/images/testimonials/jessica-nguyen.jpg"
     }
   ];
   
@@ -193,18 +193,6 @@ const Testimonials: React.FC = () => {
                   className="min-w-[300px] md:min-w-[450px] px-4"
                 >
                   <div className="bg-white rounded-lg shadow-lg p-8 h-full flex flex-col">
-                    {/* Rating */}
-                    <div className="flex space-x-1 mb-4">
-                      {Array.from({ length: 5 }).map((_, i) => (
-                        <IconWrapper 
-                          key={i}
-                          name="FiStar"
-                          size={18}
-                          className={i < testimonial.rating ? "text-yellow-400 fill-current" : "text-gray-300"}
-                        />
-                      ))}
-                    </div>
-                    
                     {/* Quote */}
                     <blockquote className="mb-6 flex-grow italic text-gray-700">
                       "{testimonial.quote}"
@@ -213,7 +201,7 @@ const Testimonials: React.FC = () => {
                     {/* Author */}
                     <div>
                       <p className="font-bold text-primary">{testimonial.name}</p>
-                      <p className="text-sm text-gray-500">{testimonial.position}</p>
+                      <p className="text-sm text-gray-500">{testimonial.title}</p>
                     </div>
                   </div>
                 </div>

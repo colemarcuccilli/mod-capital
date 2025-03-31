@@ -1,7 +1,7 @@
 import React from 'react';
 import FundingTypePage from '../components/templates/FundingTypePage';
 import IconWrapper from '../components/atoms/IconWrapper';
-import { FiCheckCircle, FiDollarSign, FiTrendingUp, FiCalendar, FiHome } from 'react-icons/fi';
+import { FiCheckCircle, FiDollarSign, FiTrendingUp, FiCalendar, FiHome, FiFileText, FiSearch } from 'react-icons/fi';
 
 const DoubleClose: React.FC = () => {
   const benefits = [
@@ -61,7 +61,7 @@ const DoubleClose: React.FC = () => {
     },
     {
       question: "How fast can I get funded for a double close?",
-      answer: "With Mod Capital, funding for double close transactions can be arranged in as little as 48 hours, depending on the complexity of the deal and documentation readiness."
+      answer: "With Domentra, funding for double close transactions can be arranged in as little as 48 hours, depending on the complexity of the deal and documentation readiness."
     },
     {
       question: "Do I need good credit to qualify for double close funding?",
@@ -88,7 +88,7 @@ const DoubleClose: React.FC = () => {
       "No income verification or extensive credit checks required",
       "Property transferred smoothly with minimal paperwork"
     ],
-    quote: "Mod Capital made my first double close deal possible. Without their funding, I would have missed out on a $75K profit opportunity. Their process was fast, transparent, and straightforward.",
+    quote: "Domentra made my first double close deal possible. Without their funding, I would have missed out on a $75K profit opportunity. Their process was fast, transparent, and straightforward.",
     author: "John D., Real Estate Investor"
   };
   
@@ -101,7 +101,7 @@ const DoubleClose: React.FC = () => {
     },
     {
       icon: <IconWrapper name="FiDollarSign" size={32} className="text-accent" />,
-      title: "Mod Capital Funding",
+      title: "Domentra Funding",
       description: "We provide the capital to fund your purchase with quick approval and minimal documentation"
     },
     {

@@ -59,7 +59,7 @@ const App: React.FC = () => {
         <IntroAnimation onComplete={handleIntroComplete} />
       )}
       
-      <Router basename="/mod-capital">
+      <Router>
         <ScrollToTop />
         <MainLayout>
           <Routes>

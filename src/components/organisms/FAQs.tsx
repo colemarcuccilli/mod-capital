@@ -42,7 +42,7 @@ const FAQs: React.FC = () => {
       answer: "We typically need 48 hours from submission to funding, however we will fund as fast as possible, and in some cases, same day. If you have a deal, your best bet is to submit it as soon as possible so we can review it and get the process started."
     },
     {
-      question: "Does Mod Capital fund the deals?",
+      question: "Does Domentra fund the deals?",
       answer: "Sometimes we will directly fund your deal, or we will bring in a capital partner to get it done!"
     }
   ];
@@ -84,7 +84,7 @@ const FAQs: React.FC = () => {
         // Reset any transforms or styles 
         gsap.to(item, {
           y: 0, 
-          backgroundColor: 'white',
+          backgroundColor: 'var(--color-background)',
           boxShadow: '0 4px 16px rgba(0, 0, 0, 0.08)',
           duration: 0.3
         });
@@ -127,7 +127,7 @@ const FAQs: React.FC = () => {
       // Reset any transforms or styles
       gsap.to(faqItem, {
         y: 0,
-        backgroundColor: 'white',
+        backgroundColor: 'var(--color-background)',
         boxShadow: '0 4px 16px rgba(0, 0, 0, 0.08)',
         duration: 0.3
       });
@@ -173,7 +173,7 @@ const FAQs: React.FC = () => {
       
       // Add a subtle highlight to the expanded item
       gsap.to(faqItem, {
-        backgroundColor: 'white',
+        backgroundColor: 'var(--color-background)',
         boxShadow: '0 8px 24px rgba(0, 0, 0, 0.12)',
         duration: 0.3
       });
@@ -321,10 +321,10 @@ const FAQs: React.FC = () => {
     <section 
       ref={sectionRef}
       id="faqs"
-      className="relative py-20 bg-red-50 overflow-hidden"
+      className="relative py-20 bg-gray-50 overflow-hidden"
     >
-      {/* Particle Background */}
-      <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-red-50 to-red-100">
+      {/* Particle Background - Use accent (Bittersweet) and secondary (Poix) */}
+      <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-gray-50 to-gray-100">
         {[...Array(15)].map((_, i) => (
           <div 
             key={i}
@@ -332,7 +332,8 @@ const FAQs: React.FC = () => {
             style={{
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
-              backgroundColor: `rgba(${Math.floor(Math.random() * 100) + 155}, 0, 0, 0.1)`,
+              // Use accent and secondary colors with low opacity
+              backgroundColor: Math.random() > 0.5 ? 'rgba(255, 102, 102, 0.1)' : 'rgba(201, 87, 229, 0.1)',
               transform: `scale(${Math.random() * 2 + 0.5})`,
               opacity: Math.random() * 0.5 + 0.1
             }}
@@ -340,16 +341,16 @@ const FAQs: React.FC = () => {
         ))}
       </div>
       
-      {/* Parallax Overlay */}
+      {/* Parallax Overlay - Use primary color (Rich Black) */}
       <div 
         ref={overlayRef}
         className="absolute inset-0 opacity-0 pointer-events-none"
         style={{
-          background: 'radial-gradient(circle at 50% 50%, rgba(220, 38, 38, 0.1) 0%, rgba(16, 24, 39, 0.05) 100%)',
+          background: 'radial-gradient(circle at 50% 50%, rgba(13, 19, 33, 0.1) 0%, rgba(13, 19, 33, 0.05) 100%)', // Rich Black
         }}
       />
       
-      {/* Large decorative ring */}
+      {/* Large decorative ring - Use accent (Bittersweet) and primary (Rich Black) */}
       <div className="absolute right-0 top-0 w-96 h-96 rounded-full border-4 border-accent/10 -mr-48 -mt-48 transform rotate-45" />
       <div className="absolute left-0 bottom-0 w-72 h-72 rounded-full border-4 border-primary/10 -ml-36 -mb-36 transform -rotate-12" />
       
@@ -357,19 +358,23 @@ const FAQs: React.FC = () => {
         <div className="text-center">
           <div className="flex items-center justify-center mb-3">
             <div className="relative">
+              {/* Use accent color (Bittersweet) */}
               <div className="absolute inset-0 bg-accent/20 blur-xl rounded-full"></div>
               <IconWrapper name="FiHelpCircle" size={32} className="text-accent relative z-10" />
             </div>
           </div>
           <h2 
             ref={titleRef}
-            className="text-3xl md:text-4xl font-bold mb-2 text-black"
+            // Use primary text color (Rich Black)
+            className="text-3xl md:text-4xl font-bold mb-2 text-primary"
           >
+            {/* Use accent text color (Bittersweet) */}
             <span className="text-accent">
               Funding Questions
             </span>
           </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto mb-12">
+          {/* Use primary text color (Rich Black) with opacity */}
+          <p className="text-primary/80 max-w-2xl mx-auto mb-12">
             Get answers to the most common questions about our funding solutions and process.
           </p>
         </div>
@@ -380,13 +385,16 @@ const FAQs: React.FC = () => {
             <div
               key={index}
               ref={addToFaqItemsRef}
-              className="faq-item backdrop-blur-sm bg-white rounded-xl shadow-md p-5 mb-4 cursor-pointer hover:shadow-lg transition-shadow duration-300"
+              // Use background color (Baby Powder) for FAQ item
+              className="faq-item backdrop-blur-sm bg-background rounded-xl shadow-md p-5 mb-4 cursor-pointer hover:shadow-lg transition-shadow duration-300"
             >
               <div className="flex items-center justify-between">
-                <h3 className="text-lg md:text-xl font-semibold text-black pr-4">
+                {/* Use primary text color (Rich Black) */}
+                <h3 className="text-lg md:text-xl font-semibold text-primary pr-4">
                   {faq.question}
                 </h3>
                 <div className="relative flex-shrink-0 w-6 h-6">
+                  {/* Use accent color (Bittersweet) for icons */}
                   <div className="plus-icon absolute inset-0">
                     <IconWrapper name="FiPlus" size={24} className="text-accent" />
                   </div>
@@ -396,7 +404,8 @@ const FAQs: React.FC = () => {
                 </div>
               </div>
               <div className="faq-answer overflow-hidden h-0 mt-0 hidden">
-                <p className="text-gray-600">{faq.answer}</p>
+                {/* Use primary text color (Rich Black) with opacity */}
+                <p className="text-primary/80">{faq.answer}</p>
               </div>
             </div>
           ))}

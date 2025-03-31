@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import FundingTypePage from '../components/templates/FundingTypePage';
+import IconWrapper from '../components/atoms/IconWrapper';
 
 const PrivateMoney: React.FC = () => {
   // State for active loan type tab
@@ -339,7 +340,7 @@ const PrivateMoney: React.FC = () => {
             Our Private <span className="text-accent">Lender Network</span>
           </h2>
           <p className="text-center text-gray-600 max-w-3xl mx-auto mb-12">
-            When you work with Mod Capital, you gain access to our exclusive network of vetted private lenders specializing in various types of real estate investments.
+            When you work with Domentra, you gain access to our exclusive network of vetted private lenders specializing in various types of real estate investments.
           </p>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">

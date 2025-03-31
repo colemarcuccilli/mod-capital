@@ -1,12 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
-import Button from '../atoms/Button';
+import React, { useEffect, useRef } from 'react';
 import AnimatedButton from '../atoms/AnimatedButton';
 import gsap from 'gsap';
 import { TextPlugin } from 'gsap/TextPlugin';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import { FiChevronDown } from 'react-icons/fi';
 import IconWrapper from '../atoms/IconWrapper';
-import { Link } from 'react-router-dom';
 
 // Register TextPlugin and ScrollToPlugin
 gsap.registerPlugin(TextPlugin, ScrollToPlugin);
@@ -20,7 +18,7 @@ interface HeroProps {
 }
 
 const Hero: React.FC<HeroProps> = ({
-  subtitle = "Need funding to scale? We make it fast and simple.",
+  subtitle = "Simple Funding Solutions for Real Estate Investors",
   ctaText = "View Funding Solutions",
   ctaLink,
   backgroundImage,
@@ -153,7 +151,7 @@ const Hero: React.FC<HeroProps> = ({
           <div className="absolute inset-0 bg-primary/60"></div>
         </div>
       ) : (
-        <div className="absolute inset-0 bg-white"></div>
+        <div className="absolute inset-0 bg-background"></div>
       )}
       
       {/* Content */}
@@ -161,14 +159,14 @@ const Hero: React.FC<HeroProps> = ({
         <div className="max-w-4xl mx-auto text-center">
           <h1 
             ref={titleRef}
-            className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-black"
+            className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-primary"
           >
-            <span ref={rotatingTextRef} className="text-black"></span>
+            <span ref={rotatingTextRef} className="text-primary"></span>
           </h1>
           
           <p 
             ref={subtitleRef}
-            className="text-xl md:text-2xl text-gray-600 mb-10"
+            className="text-xl md:text-2xl text-primary/80 mb-10"
           >
             {subtitle}
           </p>
@@ -189,10 +187,10 @@ const Hero: React.FC<HeroProps> = ({
         <button
           ref={scrollButtonRef}
           onClick={handleScrollClick}
-          className="w-12 h-12 bg-white text-primary hover:bg-gray-100 rounded-full flex items-center justify-center shadow-lg focus:outline-none transition-colors duration-300"
+          className="w-12 h-12 bg-background text-primary hover:bg-gray-100 rounded-full flex items-center justify-center shadow-lg focus:outline-none transition-colors duration-300"
           aria-label="Scroll down"
         >
-          <IconWrapper name="FiChevronDown" size={24} />
+          <IconWrapper name="FiChevronDown" size={24} className="text-primary" />
         </button>
       </div>
     </div>
