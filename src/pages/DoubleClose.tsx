@@ -2,6 +2,7 @@ import React from 'react';
 import FundingTypePage from '../components/templates/FundingTypePage';
 import IconWrapper from '../components/atoms/IconWrapper';
 import { FiCheckCircle, FiDollarSign, FiTrendingUp, FiCalendar, FiHome, FiFileText, FiSearch } from 'react-icons/fi';
+import DoubleCloseForm from '../components/organisms/DoubleCloseForm';
 
 const DoubleClose: React.FC = () => {
   const benefits = [
@@ -205,6 +206,13 @@ const DoubleClose: React.FC = () => {
           </div>
         </div>
       </section>
+      
+      {/* Add the Form Section */}
+      <section id="apply-form" className="py-20 bg-background">
+        <div className="container">
+          <DoubleCloseForm />
+        </div>
+      </section>
     </>
   );
   
@@ -218,7 +226,7 @@ const DoubleClose: React.FC = () => {
       faqs={faqs}
       backgroundImage="https://images.unsplash.com/photo-1560518883-f2b94d7a3e2e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1673&q=80"
       ctaText="Apply for Double Close Funding"
-      ctaLink="/contact?type=double-close"
+      ctaLink="#apply-form"
       customSections={customSections}
     />
   );

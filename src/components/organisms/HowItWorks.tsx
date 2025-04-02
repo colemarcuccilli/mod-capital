@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { FiFileText, FiCheckSquare, FiLifeBuoy, FiDollarSign, FiArrowDown } from 'react-icons/fi';
+import { FiFileText, FiCheckSquare, FiLifeBuoy, FiDollarSign, FiArrowDown, FiPhoneCall, FiUsers } from 'react-icons/fi';
 import IconWrapper from '../atoms/IconWrapper';
 
 // Register GSAP plugins
@@ -36,26 +36,27 @@ const HowItWorks: React.FC = () => {
     }
   };
   
+  // Updated Steps Data
   const steps: Step[] = [
     {
       icon: <IconWrapper name="FiFileText" size={24} className="text-background" />,
       title: "Request Funding",
-      description: "Submit your funding request through our simple online form to start quickly"
+      description: "Submit your funding request with all information"
     },
     {
-      icon: <IconWrapper name="FiCheckSquare" size={24} className="text-background" />,
-      title: "Funding Terms",
-      description: "We'll create a funding agreement with clear terms and manageable conditions"
+      icon: <IconWrapper name="FiPhoneCall" size={24} className="text-background" />,
+      title: "Get Contacted",
+      description: "Our team will update you with the status of your request"
     },
     {
-      icon: <IconWrapper name="FiLifeBuoy" size={24} className="text-background" />,
-      title: "Funding Review",
-      description: "Our team will review and validate your funding needs within 24 hours"
+      icon: <IconWrapper name="FiUsers" size={24} className="text-background" />,
+      title: "Get Matched",
+      description: "Sign contracts with Domentra & Lender"
     },
     {
       icon: <IconWrapper name="FiDollarSign" size={24} className="text-background" />,
-      title: "Fast Funding",
-      description: "Receive your funding within 48 hours or less to your preferred account"
+      title: "Get Funded",
+      description: "After contracts are signed"
     }
   ];
   
@@ -142,27 +143,27 @@ const HowItWorks: React.FC = () => {
       // Triangle animations
       const triangles = document.querySelectorAll('.step-triangle');
       if (triangles.length) {
-        // Animate each triangle with a slight delay
         triangles.forEach((triangle, index) => {
-          // Initial state
-          gsap.set(triangle, { 
-            scale: 0,
-            transformOrigin: "center bottom"
-          });
+          gsap.set(triangle, { scale: 0, transformOrigin: "center bottom" });
           
-          // Scale up animation
-          gsap.to(triangle, {
-            scale: 1,
-            duration: 0.5,
-            delay: 0.3 + (index * 0.2),
-            ease: "back.out(1.7)",
-            scrollTrigger: {
-              trigger: stepsRef.current[index],
-              start: "top 80%",
-            }
-          });
+          // Check if the corresponding step ref exists before creating ScrollTrigger
+          const triggerElement = stepsRef.current[index];
+          if (triggerElement) { 
+            gsap.to(triangle, {
+              scale: 1,
+              duration: 0.5,
+              delay: 0.3 + (index * 0.2),
+              ease: "back.out(1.7)",
+              scrollTrigger: {
+                trigger: triggerElement, // Use the checked triggerElement
+                start: "top 80%",
+              }
+            });
+          } else {
+             console.warn(`HowItWorks: stepsRef element at index ${index} not found for triangle animation trigger.`);
+          }
           
-          // Add a subtle bounce animation
+          // Bounce animation is fine as it doesn't depend on the trigger ref
           gsap.to(triangle, {
             y: -3,
             duration: 1 + (index * 0.2),

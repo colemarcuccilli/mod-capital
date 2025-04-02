@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import FundingTypePage from '../components/templates/FundingTypePage';
+import PMLForm from '../components/organisms/PMLForm';
 import IconWrapper from '../components/atoms/IconWrapper';
 
 const PrivateMoney: React.FC = () => {
@@ -464,6 +465,13 @@ const PrivateMoney: React.FC = () => {
           </div>
         </div>
       </section>
+
+      {/* Add the PML Form Section */}
+      <section id="apply-form" className="py-20 bg-background">
+        <div className="container">
+          <PMLForm />
+        </div>
+      </section>
     </>
   );
   
@@ -477,7 +485,7 @@ const PrivateMoney: React.FC = () => {
       faqs={faqs}
       backgroundImage="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1674&q=80"
       ctaText="Apply for Private Money Funding"
-      ctaLink="/contact?type=private-money"
+      ctaLink="#apply-form"
       customSections={customSections}
     />
   );

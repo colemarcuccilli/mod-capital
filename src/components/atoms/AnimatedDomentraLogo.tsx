@@ -2,173 +2,157 @@ import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { Link } from 'react-router-dom';
 
-// Import SVG files
-// Make sure these paths are correct relative to this file
+// Import ICON SVG files
 import richBlackIcon from '../../assets/images/logos/DomentraIconRichBlack.svg';
 import bitterSweetIcon from '../../assets/images/logos/DomentraIconBittersweet.svg';
 import poixIcon from '../../assets/images/logos/DomentraIconPhoix.svg';
 import mindaroIcon from '../../assets/images/logos/DomentraIconMindaro.svg';
-// Import the FULL wordmark (includes the D) for the final state
-import wordmarkFinal from '../../assets/images/logos/DomentraWordMarkBittersweet.svg';
 import keyHoleOutline from '../../assets/images/logos/KeyHoleOutline.svg';
 
-// Import ALL colored wordmarks for the final rotation
-import wordmarkBittersweet from '../../assets/images/logos/DomentraWordMarkBittersweet.svg';
-import wordmarkPoix from '../../assets/images/logos/DomentraWordMarkPhoix.svg';
-import wordmarkMindaro from '../../assets/images/logos/DomentraWordMarkMindaro.svg';
-import wordmarkRichBlack from '../../assets/images/logos/DomentraWordMarkRichBlack.svg';
+// Import the OMENTRA part SVG
+import omentraWordmark from '../../assets/images/logos/DomentraWordMarkLogoNoD.svg';
+
+// Remove imports for full wordmarks if not needed elsewhere
+// import wordmarkBittersweet from '../../assets/images/logos/DomentraWordMarkBittersweet.svg';
+// import wordmarkPoix from '../../assets/images/logos/DomentraWordMarkPhoix.svg';
+// import wordmarkMindaro from '../../assets/images/logos/DomentraWordMarkMindaro.svg';
+// import wordmarkRichBlack from '../../assets/images/logos/DomentraWordMarkRichBlack.svg';
 
 const AnimatedDomentraLogo: React.FC<{className?: string}> = ({ className = '' }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  // Icon Refs (for animation phases)
+  // Icon Refs
   const richBlackIconRef = useRef<HTMLImageElement>(null);
   const bitterSweetIconRef = useRef<HTMLImageElement>(null);
   const poixIconRef = useRef<HTMLImageElement>(null);
   const mindaroIconRef = useRef<HTMLImageElement>(null);
   const keyHoleOutlineRef = useRef<HTMLImageElement>(null);
-  // Wordmark Refs (for final revealed state & rotation)
-  const wordmarkBittersweetRef = useRef<HTMLImageElement>(null);
-  const wordmarkPoixRef = useRef<HTMLImageElement>(null);
-  const wordmarkMindaroRef = useRef<HTMLImageElement>(null);
-  const wordmarkRichBlackRef = useRef<HTMLImageElement>(null);
-  // Use a ref for the timeline to manage restarts/kills
+  // Omentra Ref
+  const omentraRef = useRef<HTMLImageElement>(null);
+  
   const tl = useRef<gsap.core.Timeline | null>(null);
-  const wordmarkColorIndex = useRef(0); // To track which color to show
+  // Index for cycling ICON color
+  const iconColorIndex = useRef(0); 
 
-  // Define estimated width for positioning calculations
-  const iconWidth = 40; // Corresponds to h-10/w-10 approx
-  const finalWordmarkWidth = 180; // Estimated width of the full logo
-  // Increase scale factor further - Adjust this value! Try maybe 1.3?
-  const wordmarkScaleFactor = 1.3; 
+  const iconWidth = 40;
+  const omentraWidth = 140; // Estimated width of the "omentra" part
+  const finalLogoWidth = iconWidth + omentraWidth; // Total approx width
+  // Removed wordmarkScaleFactor
 
   useEffect(() => {
-    // GSAP Context for safe cleanup
     const ctx = gsap.context(() => {
       if (!containerRef.current) return;
 
       const allIcons = [
-          richBlackIconRef.current,
-          bitterSweetIconRef.current,
-          poixIconRef.current,
-          mindaroIconRef.current,
-          keyHoleOutlineRef.current
+          richBlackIconRef.current, bitterSweetIconRef.current,
+          poixIconRef.current, mindaroIconRef.current, keyHoleOutlineRef.current
       ];
-      const wordmarks = [
-          wordmarkBittersweetRef.current,
-          wordmarkPoixRef.current,
-          wordmarkMindaroRef.current,
-          wordmarkRichBlackRef.current
-      ];
+      const omentraEl = omentraRef.current;
+      // List of actual icon refs for color cycling
+      const coloredIcons = [
+          bitterSweetIconRef.current, poixIconRef.current, 
+          mindaroIconRef.current, richBlackIconRef.current 
+      ]; 
 
-      if (wordmarks.some(ref => !ref) || allIcons.some(ref => !ref)) {
-          console.warn("AnimatedDomentraLogo: Refs not ready on mount.");
-          return;
+      if (!omentraEl || allIcons.some(ref => !ref)) {
+          console.warn("AnimatedDomentraLogo: Refs not ready."); return;
       }
       
-      // Initialize the timeline
       tl.current = gsap.timeline({
-        // Repeat indefinitely, add delay between repeats
         repeat: -1, 
         repeatDelay: 3, 
-        paused: true, // Start paused
-        defaults: { overwrite: "auto" }, // Prevent overlapping tweens
-        // onRepeat callback to cycle wordmark visibility
+        paused: true,
+        defaults: { overwrite: "auto" },
         onRepeat: () => {
-          wordmarkColorIndex.current = (wordmarkColorIndex.current + 1) % wordmarks.length;
-          // On repeat, ensure only the CURRENT target wordmark is visible before the next loop starts revealing it.
-          // NOTE: The actual reveal happens in the main timeline sequence.
-          gsap.set(wordmarks, { autoAlpha: 0 });
-          // We don't set the next one visible here, the timeline does it.
+          // Cycle icon color index
+          iconColorIndex.current = (iconColorIndex.current + 1) % coloredIcons.length;
+           // On repeat, reset icon visibility - timeline will handle correct one
+           gsap.set(coloredIcons, { autoAlpha: 0 }); 
+           // Omentra visibility is handled by the timeline reset below
         }
       });
 
-      // --- Timeline Definition --- 
-      const initialX = finalWordmarkWidth - iconWidth;
-      // Recalculate clip path based on the NEW scale factor
-      const scaledWordmarkVisibleWidth = finalWordmarkWidth * wordmarkScaleFactor;
-      const effectiveIconWidth = iconWidth * wordmarkScaleFactor; // Estimate visual width of 'D' in scaled wordmark
-      const iconRevealWidthPercent = (effectiveIconWidth / scaledWordmarkVisibleWidth) * 100;
+      const initialIconX = finalLogoWidth - iconWidth; // Start icon on far right
+      // const initialOmentraX = iconWidth; // No longer needed for x
 
-      // Initial State (Force elements to starting positions/opacity BEFORE animation starts)
-      gsap.set(containerRef.current, { autoAlpha: 1}); // Make container visible
-      // Hide ALL wordmarks initially, set clip-path to hide 'omentra' part
-      gsap.set(wordmarks, { 
-        autoAlpha: 0, 
-        x: 0, 
-        y: 0, 
-        scale: wordmarkScaleFactor, // Apply NEW scale factor
-        transformOrigin: 'left center', // Scale from left-center
-        clipPath: `inset(0 ${100 - iconRevealWidthPercent}% 0 0)` // Initially only show the 'D' part area
+      // Initial State 
+      gsap.set(containerRef.current, { autoAlpha: 1});
+      // Position omentra at final spot (x:0, y:2), hidden and clipped
+      gsap.set(omentraEl, { 
+          autoAlpha: 0, x: 0, y: 2, // Match final icon y offset
+          clipPath: 'inset(0 100% 0 0)', // Start fully clipped
+          transformOrigin: 'left center'
       }); 
-      gsap.set(allIcons, { // Set ALL icons+outline initial state
-        autoAlpha: 0, 
-        rotation: 90, 
-        x: initialX, 
-        scale: 1, 
-        transformOrigin: 'center center' 
+      // Position/hide all icons/outline
+      gsap.set(allIcons, { 
+          autoAlpha: 0, rotation: 90, x: initialIconX, y: 2, // Keep y offset
+          scale: 1, transformOrigin: 'center center' 
       });
-      gsap.set(keyHoleOutlineRef.current, { scale: 0.25 }); // Apply specific scale to outline
-      gsap.set(richBlackIconRef.current, { autoAlpha: 1 }); // Make STARTING icon visible
+      gsap.set(keyHoleOutlineRef.current, { scale: 0.25 }); // Keep outline small
+      gsap.set(richBlackIconRef.current, { autoAlpha: 1 }); // Show starting icon
       
       // Build the timeline
       tl.current
-        // 1. UNLOCK SEQUENCE (Slower Rotation: 1.0s)
+        // 1. UNLOCK SEQUENCE (Rotation: 1.0s)
         .addLabel("start")
-        .to(richBlackIconRef.current, { duration: 0.15, scale: 1.05, repeat: 1, yoyo: true, ease: "power1.inOut" }, "start+=0.1") // Pulse starts slightly after container visible
-        .to(keyHoleOutlineRef.current, { duration: 0.2, autoAlpha: 0.8, ease: "power2.out" }, "start+=0.15") // Show outline
-        .to(allIcons, { duration: 1.0, rotation: 0, ease: "back.out(1.7)", x: initialX }, "start+=0.25") // Rotate all
-        .to(richBlackIconRef.current, { duration: 0.2, autoAlpha: 0, ease: "power1.in" }, "start+=0.85") // Fade out black
-        .to(mindaroIconRef.current, { duration: 0.2, autoAlpha: 1, ease: "power1.out" }, "start+=0.85") // Fade in mindaro
-        .to(keyHoleOutlineRef.current, { duration: 0.2, autoAlpha: 0, ease: "power2.in" }, "start+=0.95") // Fade out outline
+        .to(richBlackIconRef.current, { duration: 0.15, scale: 1.05, repeat: 1, yoyo: true, ease: "power1.inOut" }, "start+=0.1")
+        .to(keyHoleOutlineRef.current, { duration: 0.2, autoAlpha: 0.8, ease: "power2.out" }, "start+=0.15")
+        .to(allIcons, { duration: 1.0, rotation: 0, ease: "back.out(1.7)", x: initialIconX }, "start+=0.25") 
+        .to(richBlackIconRef.current, { duration: 0.2, autoAlpha: 0, ease: "power1.in" }, "start+=0.85")
+        .to(mindaroIconRef.current, { duration: 0.2, autoAlpha: 1, ease: "power1.out" }, "start+=0.85")
+        .to(keyHoleOutlineRef.current, { duration: 0.2, autoAlpha: 0, ease: "power2.in" }, "start+=0.95")
 
-        // 2. POSITION SHIFT (Slower Slide: 1.5s)
-        .addLabel("slide", "-=0.1") // Overlap slightly with previous step
-        .to([mindaroIconRef.current, poixIconRef.current, bitterSweetIconRef.current], { duration: 1.5, x: 0, ease: "power2.inOut" }, "slide")
+        // 2. POSITION SHIFT (Slide: 1.5s) - Target x: -13 for icons
+        .addLabel("slide", "-=0.1") 
+        .to([mindaroIconRef.current, poixIconRef.current, bitterSweetIconRef.current], { 
+            duration: 1.5, 
+            x: -13, // <-- CHANGE: Target -13px for final position
+            ease: "power2.inOut" 
+        }, "slide") 
+        // Fades still happen relative to the slide duration
         .to(mindaroIconRef.current, { duration: 0.4, autoAlpha: 0, ease: "power1.in" }, "slide+=0.3")
         .to(poixIconRef.current, { duration: 0.4, autoAlpha: 1, ease: "power1.out" }, "slide+=0.3")
         .to(poixIconRef.current, { duration: 0.4, autoAlpha: 0, ease: "power1.in" }, "slide+=0.8")
         .to(bitterSweetIconRef.current, { duration: 0.4, autoAlpha: 1, ease: "power1.out" }, "slide+=0.8")
 
-        // 3. WORDMARK COMPLETION (Slower Reveal: 1.0s, No Zoom)
-        .addLabel("reveal", "-=0.1") // Overlap slightly
-        .to(bitterSweetIconRef.current, { duration: 0.3, autoAlpha: 0, ease: "power1.in" }, "reveal")
-        // Fade in the *correct* wordmark for this loop iteration (NO scale animation)
-        .set(wordmarks[wordmarkColorIndex.current], { autoAlpha: 1 }, "reveal+=0.1") 
-        // Animate the clip-path to reveal 'omentra' left-to-right (slower reveal: 1.0s)
-        .to(wordmarks[wordmarkColorIndex.current], { 
+        // 3. OMENTRA REVEAL 
+        .addLabel("reveal", "-=0.1") 
+        // Keep icon visible at its new x:-13 position
+        .set(coloredIcons[iconColorIndex.current], { autoAlpha: 1 }, "reveal+=0.1") 
+        // Reveal omentra starting from x:0
+        .set(omentraEl, { autoAlpha: 1 }, "reveal+=0.1") 
+        .to(omentraEl, { 
             duration: 1.0, 
-            clipPath: 'inset(0 0% 0 0)', // Reveal fully
+            clipPath: 'inset(0 0% 0 0)', 
             ease: "power2.out" 
-        }, "reveal+=0.1");
-
-      // Start the animation after a short delay
+        }, "reveal+=0.1"); 
+        
       const playTimeout = setTimeout(() => {
         tl.current?.play();
-      }, 500);
+      }, 500); 
 
-    }, containerRef); // Scope GSAP context to the container
+    }, containerRef); 
 
-    // Cleanup function
     return () => {
-      //clearTimeout(playTimeout); // Timeout cleared by context revert
-      ctx.revert(); // Kill timeline and revert animations
+      ctx.revert();
     };
-  }, []); // Empty dependency array ensures runs once on mount
+  }, []); 
 
   return (
-    // Increase container width to accommodate the larger scaled wordmark
-    <div ref={containerRef} className={`relative h-10 md:h-12 opacity-0 ${className}`} style={{ width: `${finalWordmarkWidth * wordmarkScaleFactor * 0.9}px` /* Adjust width based on scale */ }}>
-      {/* Link wraps everything */}
+    // Container width
+    <div ref={containerRef} className={`relative h-10 md:h-12 opacity-0 ${className}`} style={{ width: `${finalLogoWidth}px` }}> 
       <Link to="/" className="absolute inset-0 block h-full w-full" aria-label="Domentra Home">
-        {/* Final Wordmarks - Positioned top-left, hidden initially, visibility toggled by GSAP */}
-        <img ref={wordmarkBittersweetRef} src={wordmarkBittersweet} alt="Domentra" className="absolute top-0 left-0 h-full w-auto opacity-0" style={{ transformOrigin: 'left center' /* Scale from left */ }}/>
-        <img ref={wordmarkPoixRef} src={wordmarkPoix} alt="Domentra" className="absolute top-0 left-0 h-full w-auto opacity-0" style={{ transformOrigin: 'left center' }}/>
-        <img ref={wordmarkMindaroRef} src={wordmarkMindaro} alt="Domentra" className="absolute top-0 left-0 h-full w-auto opacity-0" style={{ transformOrigin: 'left center' }}/>
-        <img ref={wordmarkRichBlackRef} src={wordmarkRichBlack} alt="Domentra" className="absolute top-0 left-0 h-full w-auto opacity-0" style={{ transformOrigin: 'left center' }}/>
-        
-        {/* Outline - Initially hidden & scaled by GSAP */}
+        {/* Omentra part - positioned top-left, hidden/clipped initially */}
+        <img 
+            ref={omentraRef} 
+            src={omentraWordmark} 
+            alt="omentra" 
+            className="absolute top-0 left-0 h-full w-auto opacity-0" // Position at 0,0 rely on SVG content for spacing
+            style={{ transformOrigin: 'left center' }}
+        />
+
+        {/* Outline - positioned top-left, hidden/scaled initially */}
         <img ref={keyHoleOutlineRef} src={keyHoleOutline} alt="" className="absolute top-0 left-0 h-10 w-10 opacity-0" aria-hidden="true"/>
-        {/* Icons - Initially hidden by GSAP, except richBlackIconRef */}
+        {/* Icons - positioned top-left, hidden initially */} 
         <img ref={richBlackIconRef} src={richBlackIcon} alt="" className="absolute top-0 left-0 h-10 w-10 opacity-0" aria-hidden="true"/>
         <img ref={bitterSweetIconRef} src={bitterSweetIcon} alt="" className="absolute top-0 left-0 h-10 w-10 opacity-0" aria-hidden="true"/>
         <img ref={poixIconRef} src={poixIcon} alt="" className="absolute top-0 left-0 h-10 w-10 opacity-0" aria-hidden="true"/>

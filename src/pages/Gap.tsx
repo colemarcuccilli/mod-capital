@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import FundingTypePage from '../components/templates/FundingTypePage';
+import GapForm from '../components/organisms/GapForm';
 
 const Gap: React.FC = () => {
   // Comparison slider state
@@ -403,6 +404,13 @@ const Gap: React.FC = () => {
           </div>
         </div>
       </section>
+
+      {/* Add the Gap Form Section */}
+      <section id="apply-form" className="py-20 bg-background">
+        <div className="container">
+          <GapForm />
+        </div>
+      </section>
     </>
   );
   
@@ -416,7 +424,7 @@ const Gap: React.FC = () => {
       faqs={faqs}
       backgroundImage="https://images.unsplash.com/photo-1554469384-e58fac937bb4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1650&q=80"
       ctaText="Apply for Gap Funding"
-      ctaLink="/contact?type=gap"
+      ctaLink="#apply-form"
       customSections={customSections}
     />
   );

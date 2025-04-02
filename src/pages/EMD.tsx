@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import FundingTypePage from '../components/templates/FundingTypePage';
+import EMDForm from '../components/organisms/EMDForm';
 
 const EMD: React.FC = () => {
   // EMD Calculator state
@@ -358,6 +359,13 @@ const EMD: React.FC = () => {
           </div>
         </div>
       </section>
+
+      {/* Add the EMD Form Section */}
+      <section id="apply-form" className="py-20 bg-background">
+        <div className="container">
+          <EMDForm />
+        </div>
+      </section>
     </>
   );
   
@@ -371,7 +379,7 @@ const EMD: React.FC = () => {
       faqs={faqs}
       backgroundImage="https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1650&q=80"
       ctaText="Apply for EMD Funding"
-      ctaLink="/contact?type=emd"
+      ctaLink="#apply-form"
       customSections={customSections}
     />
   );

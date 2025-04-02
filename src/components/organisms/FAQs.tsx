@@ -28,22 +28,27 @@ const FAQs: React.FC = () => {
     }
   };
   
+  // Updated FAQs Data
   const faqs: FAQ[] = [
     {
-      question: "What does it cost?",
-      answer: "We operate on an offer first basis, meaning YOU name your price. If we need to negotiate, we will reach out!"
+      question: "What do we charge?",
+      answer: "Domentra operates primarily on a Matchmaking Fee model. This fee can be paid upfront or, more commonly, added to the total loan amount and paid at closing."
     },
     {
       question: "Are there any upfront fees?",
-      answer: "We do not charge any upfront fees, our fee is taken at closing or built into the loan amount."
+      answer: "Typically, no. Our standard Matchmaking Fee is usually incorporated into the loan and paid at closing. In specific circumstances, an upfront fee might be discussed, but it's not our standard practice."
     },
     {
-      question: "How long does it take to get a deal funded?",
-      answer: "We typically need 48 hours from submission to funding, however we will fund as fast as possible, and in some cases, same day. If you have a deal, your best bet is to submit it as soon as possible so we can review it and get the process started."
+      question: "How long does it take to get funded?",
+      answer: "Funding times vary, but after contracts are signed by the Borrower, Lender, and Domentra, the lender typically funds the deal promptly, often within 48 hours or less depending on the specifics."
     },
     {
       question: "Does Domentra fund the deals?",
-      answer: "Sometimes we will directly fund your deal, or we will bring in a capital partner to get it done!"
+      answer: "Domentra connects borrowers with capital partners (lenders). While Domentra facilitates the process and is a party to the contracts, the actual funding comes directly from the matched lender."
+    },
+    {
+      question: "What is the funding process?",
+      answer: "1. Borrower Submits Funding Request. 2. Domentra contacts them with questions, negotiation, or status updates. 3. Once matched, Borrower, Lender & Domentra Sign Contracts. 4. Lender funds the borrower's deal."
     }
   ];
   
@@ -84,7 +89,7 @@ const FAQs: React.FC = () => {
         // Reset any transforms or styles 
         gsap.to(item, {
           y: 0, 
-          backgroundColor: 'var(--color-background)',
+          backgroundColor: '#FFFFFA',
           boxShadow: '0 4px 16px rgba(0, 0, 0, 0.08)',
           duration: 0.3
         });
@@ -127,7 +132,7 @@ const FAQs: React.FC = () => {
       // Reset any transforms or styles
       gsap.to(faqItem, {
         y: 0,
-        backgroundColor: 'var(--color-background)',
+        backgroundColor: '#FFFFFA',
         boxShadow: '0 4px 16px rgba(0, 0, 0, 0.08)',
         duration: 0.3
       });
@@ -173,7 +178,7 @@ const FAQs: React.FC = () => {
       
       // Add a subtle highlight to the expanded item
       gsap.to(faqItem, {
-        backgroundColor: 'var(--color-background)',
+        backgroundColor: '#FFFFFA',
         boxShadow: '0 8px 24px rgba(0, 0, 0, 0.12)',
         duration: 0.3
       });

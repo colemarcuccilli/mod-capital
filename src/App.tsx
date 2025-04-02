@@ -9,6 +9,7 @@ import PrivateMoney from './pages/PrivateMoney';
 import Contact from './pages/Contact';
 import ScrollToTop from './utils/ScrollToTop';
 import IntroAnimation from './components/organisms/IntroAnimation';
+import ThankYou from './pages/ThankYou';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
@@ -69,6 +70,7 @@ const App: React.FC = () => {
             <Route path="/gap" element={<Gap />} />
             <Route path="/private-money" element={<PrivateMoney />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/thank-you" element={<ThankYou />} />
             
             {/* Additional pages */}
             {/* <Route path="/blog" element={<Blog />} /> */}
