@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import MainLayout from './layouts/MainLayout';
 import Home from './pages/Home';
 import DoubleClose from './pages/DoubleClose';
@@ -10,9 +10,15 @@ import Contact from './pages/Contact';
 import ScrollToTop from './utils/ScrollToTop';
 import IntroAnimation from './components/organisms/IntroAnimation';
 import ThankYou from './pages/ThankYou';
+import Login from './pages/login';
+import Signup from './pages/signup';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
+import { AuthProvider } from './context/AuthContext';
+import DealRoom from './pages/DealRoom';
+import SubmitDeal from './pages/SubmitDeal';
+import Profile from './pages/Profile';
 
 // Register GSAP plugins globally
 gsap.registerPlugin(
@@ -60,26 +66,36 @@ const App: React.FC = () => {
         <IntroAnimation onComplete={handleIntroComplete} />
       )}
       
-      <Router>
-        <ScrollToTop />
-        <MainLayout>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/double-close" element={<DoubleClose />} />
-            <Route path="/emd" element={<EMD />} />
-            <Route path="/gap" element={<Gap />} />
-            <Route path="/private-money" element={<PrivateMoney />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/thank-you" element={<ThankYou />} />
-            
-            {/* Additional pages */}
-            {/* <Route path="/blog" element={<Blog />} /> */}
-            
-            {/* 404 Page */}
-            {/* <Route path="*" element={<NotFound />} /> */}
-          </Routes>
-        </MainLayout>
-      </Router>
+      {/* Wrap the entire Router/App with AuthProvider */}
+      <AuthProvider>
+        <Router>
+          <ScrollToTop />
+          <MainLayout>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/double-close" element={<DoubleClose />} />
+              <Route path="/emd" element={<EMD />} />
+              <Route path="/gap" element={<Gap />} />
+              <Route path="/private-money" element={<PrivateMoney />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/thank-you" element={<ThankYou />} />
+              
+              {/* Protected Routes (Placeholder) */}
+              <Route path="/deal-room" element={<DealRoom />} />
+              <Route path="/submit-deal" element={<SubmitDeal />} />
+              <Route path="/profile" element={<Profile />} />
+              
+              {/* Additional pages */}
+              {/* <Route path="/blog" element={<Blog />} /> */}
+              
+              {/* 404 Page */}
+              {/* <Route path="*" element={<NotFound />} /> */}
+            </Routes>
+          </MainLayout>
+        </Router>
+      </AuthProvider>
     </>
   );
 };

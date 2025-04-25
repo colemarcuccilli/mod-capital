@@ -6,6 +6,9 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import { FiArrowUp, FiFacebook, FiTwitter, FiInstagram, FiLinkedin } from 'react-icons/fi';
 import IconWrapper from '../atoms/IconWrapper';
+import { useAuth } from '../../context/AuthContext';
+import { signOutUser } from '../../lib/firebaseAuth';
+import { useNavigate } from 'react-router-dom';
 
 // Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
@@ -32,6 +35,9 @@ const Footer: React.FC = () => {
   const instagramIcon = <IconWrapper name="FiInstagram" size={20} />;
   const linkedinIcon = <IconWrapper name="FiLinkedin" size={20} />;
   const arrowUpIcon = <IconWrapper name="FiArrowUp" size={20} />;
+  
+  const { currentUser } = useAuth();
+  const navigate = useNavigate();
   
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -178,6 +184,15 @@ const Footer: React.FC = () => {
     }
   ];
   
+  const handleLogout = async () => {
+    try {
+      await signOutUser();
+      navigate('/');
+    } catch (error) {
+      console.error("Error signing out: ", error);
+    }
+  };
+  
   return (
     <footer className="bg-primary text-background py-16 relative">
       <div className="container mx-auto px-4">
@@ -225,6 +240,45 @@ const Footer: React.FC = () => {
               </ul>
             </div>
           ))}
+
+          {/* Account Links Column */} 
+          <div>
+            <h4 className="font-semibold text-background mb-4">Account</h4>
+            <ul className="space-y-2">
+              {currentUser ? (
+                <>
+                  <li>
+                    <Link to="/profile" className="text-background/80 hover:text-accent transition-colors duration-300">
+                      My Profile
+                    </Link>
+                  </li>
+                   <li>
+                    <Link to="/deal-room" className="text-background/80 hover:text-accent transition-colors duration-300">
+                      Deal Room
+                    </Link>
+                  </li>
+                  <li>
+                    <button onClick={handleLogout} className="text-background/80 hover:text-accent transition-colors duration-300">
+                      Logout
+                    </button>
+                  </li>
+                </>
+              ) : (
+                <>
+                  <li>
+                    <Link to="/login" className="text-background/80 hover:text-accent transition-colors duration-300">
+                      Login
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/signup" className="text-background/80 hover:text-accent transition-colors duration-300">
+                      Sign Up
+                    </Link>
+                  </li>
+                </>
+              )}
+            </ul>
+          </div>
         </div>
 
         <div className="text-center border-t border-background/10 pt-8 mt-12">

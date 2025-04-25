@@ -8,6 +8,9 @@ import FundingTypes from '../components/organisms/FundingTypes';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import Testimonials from '../components/organisms/Testimonials';
 import FAQs from '../components/organisms/FAQs';
+// Firebase Imports removed
+// import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore"; 
+// import { db } from '../lib/firebaseConfig';
 
 // Register plugins
 gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
@@ -18,6 +21,8 @@ const Home: React.FC = () => {
   const fundingTypesSectionRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
+    // --- TEMPORARY FIRESTORE WRITE/READ TEST REMOVED --- 
+    
     // Set up simple scroll snap without excessive resistance
     const ctx = gsap.context(() => {
       // Track scroll direction

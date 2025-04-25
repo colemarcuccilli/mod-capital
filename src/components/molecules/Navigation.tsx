@@ -1,14 +1,18 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FiChevronDown, FiMenu, FiX } from 'react-icons/fi';
 import gsap from 'gsap';
 import IconWrapper from '../atoms/IconWrapper';
+import { useAuth } from '../../context/AuthContext';
+import { signOutUser } from '../../lib/firebaseAuth';
 
 interface NavigationProps {
   className?: string;
 }
 
 const Navigation: React.FC<NavigationProps> = ({ className = '' }) => {
+  const { currentUser } = useAuth();
+  const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [fundingDropdownOpen, setFundingDropdownOpen] = useState(false);
   
@@ -72,6 +76,16 @@ const Navigation: React.FC<NavigationProps> = ({ className = '' }) => {
     }
   }, [fundingDropdownOpen]);
   
+  const handleLogout = async () => {
+    try {
+      await signOutUser();
+      setMobileMenuOpen(false);
+      navigate('/');
+    } catch (error) {
+      console.error("Error signing out: ", error);
+    }
+  };
+
   const fundingTypes = [
     { name: 'Double Close', path: '/double-close' },
     { name: 'EMD', path: '/emd' },
@@ -79,13 +93,25 @@ const Navigation: React.FC<NavigationProps> = ({ className = '' }) => {
     { name: 'Private Money Loans', path: '/private-money' }
   ];
   
-  const navLinks = [
+  const commonNavLinks = [
     { name: 'Home', path: '/' },
     { name: 'Referrals', path: '/referrals' },
     { name: 'Contact Us', path: '/contact' }
   ];
+
+  const loggedOutLinks = [
+    { name: 'Login', path: '/login' },
+    { name: 'Sign Up', path: '/signup' }
+  ];
+
+  const loggedInLinks = [
+    { name: 'Deal Room', path: '/deal-room' },
+    { name: 'Submit Deal', path: '/submit-deal' },
+    { name: 'Profile', path: '/profile' }
+  ];
+
+  const navLinks = currentUser ? [...commonNavLinks, ...loggedInLinks] : [...commonNavLinks, ...loggedOutLinks];
   
-  // Element variables for the icons
   const chevronDownIcon = <IconWrapper 
     name="FiChevronDown" 
     className={`text-primary transition-transform duration-300 ${fundingDropdownOpen ? 'rotate-180' : ''}`} 
@@ -138,6 +164,18 @@ const Navigation: React.FC<NavigationProps> = ({ className = '' }) => {
             </ul>
           </div>
         </li>
+
+        {/* Logout Button (if logged in) */}
+        {currentUser && (
+          <li>
+            <button 
+              onClick={handleLogout}
+              className="text-primary hover:text-accent transition-colors duration-300"
+            >
+              Logout
+            </button>
+          </li>
+        )}
       </ul>
       
       {/* Mobile Menu Button */}
@@ -196,6 +234,18 @@ const Navigation: React.FC<NavigationProps> = ({ className = '' }) => {
               </ul>
             </div>
           </li>
+
+          {/* Mobile Logout Button */} 
+          {currentUser && (
+            <li>
+              <button 
+                onClick={handleLogout}
+                className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100 transition-colors duration-200"
+              >
+                Logout
+              </button>
+            </li>
+          )}
         </ul>
       </div>
     </nav>

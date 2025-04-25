@@ -1,5 +1,8 @@
 import React, { useState, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext'; // Import useAuth
+import { createDealDocument } from '../../lib/firebaseFirestore'; // Import Firestore function
+import type { Deal } from '../../lib/firebaseFirestore';
 import AnimatedButton from '../atoms/AnimatedButton'; // Reusing our button
 
 // Interface for form data (optional but good practice)
@@ -22,6 +25,7 @@ interface FormData {
 
 const DoubleCloseForm: React.FC = () => {
   const navigate = useNavigate();
+  const { currentUser, currentUserProfile } = useAuth(); // Get user info
   const [formData, setFormData] = useState<FormData>({
     firstName: '',
     lastName: '',
@@ -63,20 +67,52 @@ const DoubleCloseForm: React.FC = () => {
     }
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => { // Make async
     e.preventDefault();
+    if (!currentUser || !currentUserProfile) {
+      alert("You must be logged in and have a profile to submit a deal.");
+      return;
+    }
+
     setIsSubmitting(true);
-    
-    // --- TODO: Implement actual form submission logic here --- 
-    // Example: Send formData to an API endpoint
-    console.log("Form Data Submitted:", formData);
-    
-    // Simulate API call delay
-    setTimeout(() => {
+    console.log("Submitting Double Close Form Data:", formData);
+
+    // Prepare data for Firestore
+    const dealData: Omit<Deal, 'id' | 'createdAt'> = {
+      submitterUid: currentUser.uid,
+      submitterRole: currentUserProfile.role,
+      status: 'active',
+      dealType: 'Double Close',
+      // Map form fields to Deal interface
+      propertyType: formData.propertyType,
+      address: formData.address,
+      city: formData.city,
+      state: formData.state,
+      amountRequested: parseFloat(formData.amountNeeded) || 0,
+      offeredReturn: parseFloat(formData.offeredReturn) || 0,
+      // Optional fields
+      dealName: `Double Close - ${formData.address}`, // Example name
+      description: formData.additionalDetails,
+      // TODO: Handle file uploads - store URLs later
+      attachments: [], 
+      // Add other relevant fields from the form if needed in Deal interface
+      // closingDate: formData.closingDate, // Example if needed
+    };
+
+    try {
+      const newDealId = await createDealDocument(dealData);
+      if (newDealId) {
+        console.log("Deal created successfully with ID:", newDealId);
+        navigate('/deal-room'); // Navigate to deal room on success
+      } else {
+        throw new Error("Failed to create deal document.");
+      }
+    } catch (error) {
+      console.error("Error submitting deal:", error);
+      alert("Failed to submit deal. Please try again."); // Simple error feedback
+    } finally {
       setIsSubmitting(false);
-      // Redirect to thank you page on successful submission
-      navigate('/thank-you'); // Ensure this route exists in App.tsx
-    }, 1500); // Simulate 1.5 seconds delay
+    }
   };
 
   return (

@@ -1,5 +1,8 @@
 import React, { useState, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
+import { createDealDocument } from '../../lib/firebaseFirestore';
+import type { Deal } from '../../lib/firebaseFirestore';
 
 // Interface for form data
 interface EMDFormData {
@@ -27,6 +30,7 @@ interface EMDFormData {
 
 const EMDForm: React.FC = () => {
   const navigate = useNavigate();
+  const { currentUser, currentUserProfile } = useAuth();
   const [formData, setFormData] = useState<EMDFormData>({
     firstName: '',
     lastName: '',
@@ -71,14 +75,57 @@ const EMDForm: React.FC = () => {
     }
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    if (!currentUser || !currentUserProfile) {
+      alert("You must be logged in and have a profile to submit a deal.");
+      return;
+    }
+
     setIsSubmitting(true);
-    console.log("EMD Form Data Submitted:", formData);
-    setTimeout(() => {
+    console.log("Submitting EMD Form Data:", formData);
+
+    // Prepare data for Firestore
+    const dealData: Omit<Deal, 'id' | 'createdAt'> = {
+      submitterUid: currentUser.uid,
+      submitterRole: currentUserProfile.role,
+      status: 'active',
+      dealType: 'EMD',
+      // Map form fields
+      propertyType: formData.propertyType,
+      address: formData.address,
+      city: formData.city,
+      state: formData.state,
+      exitStrategy: formData.exitStrategy,
+      amountRequested: parseFloat(formData.amountNeeded) || 0,
+      offeredReturn: parseFloat(formData.offeredReturn) || 0,
+      dealLength: parseFloat(formData.dealLength) || 0,
+      // Optional fields
+      dealName: `EMD - ${formData.address}`,
+      description: formData.additionalDetails,
+      rehabEstimate: parseFloat(formData.rehabEstimate || '0') || 0,
+      arv: parseFloat(formData.arv || '0') || 0,
+      // EMD specific?
+      // timeInBusiness: formData.timeInBusiness, 
+      // dealsCompleted: formData.dealsCompleted,
+      // inspectionEndDate: formData.inspectionEndDate, 
+      attachments: [], // TODO: Handle files
+    };
+
+    try {
+      const newDealId = await createDealDocument(dealData);
+      if (newDealId) {
+        console.log("Deal created successfully with ID:", newDealId);
+        navigate('/deal-room'); // Navigate to deal room on success
+      } else {
+        throw new Error("Failed to create deal document.");
+      }
+    } catch (error) {
+      console.error("Error submitting deal:", error);
+      alert("Failed to submit deal. Please try again."); 
+    } finally {
       setIsSubmitting(false);
-      navigate('/thank-you');
-    }, 1500); 
+    }
   };
 
   return (
