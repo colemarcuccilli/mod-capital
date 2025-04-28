@@ -31,7 +31,7 @@ const DoubleCloseForm: React.FC = () => {
     lastName: '',
     email: '',
     phone: '',
-    propertyType: 'Single Family', // Default value
+    propertyType: 'SFR', // Use valid literal type as default
     address: '',
     city: '',
     state: '',
@@ -67,7 +67,7 @@ const DoubleCloseForm: React.FC = () => {
     }
   };
 
-  const handleSubmit = async (e: FormEvent) => { // Make async
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!currentUser || !currentUserProfile) {
       alert("You must be logged in and have a profile to submit a deal.");
@@ -77,39 +77,55 @@ const DoubleCloseForm: React.FC = () => {
     setIsSubmitting(true);
     console.log("Submitting Double Close Form Data:", formData);
 
-    // Prepare data for Firestore
-    const dealData: Omit<Deal, 'id' | 'createdAt'> = {
+    // Construct the object matching createDealDocument's parameter type
+    const dealDataForFunction = {
       submitterUid: currentUser.uid,
       submitterRole: currentUserProfile.role,
-      status: 'active',
-      dealType: 'Double Close',
-      // Map form fields to Deal interface
-      propertyType: formData.propertyType,
-      address: formData.address,
-      city: formData.city,
-      state: formData.state,
-      amountRequested: parseFloat(formData.amountNeeded) || 0,
-      offeredReturn: parseFloat(formData.offeredReturn) || 0,
-      // Optional fields
-      dealName: `Double Close - ${formData.address}`, // Example name
-      description: formData.additionalDetails,
-      // TODO: Handle file uploads - store URLs later
-      attachments: [], 
-      // Add other relevant fields from the form if needed in Deal interface
-      // closingDate: formData.closingDate, // Example if needed
+      basicInfo: {
+        address: formData.address ?? '',
+        city: formData.city ?? '',
+        state: formData.state ?? '',
+        zip: '',
+        propertyType: (formData.propertyType as any) || 'SFR', // Still needs better type safety on form
+        condition: '' as ('Excellent' | 'Good' | 'Fair' | 'Poor' | 'Needs Full Rehab' | ''), // Use literal type default
+        bedrooms: '',
+        bathrooms: '',
+        buildingSize: '',
+        lotSize: '',
+        ownershipStatus: '' as ('Owned' | 'Under Contract' | 'Making Offer' | 'Wholesaler' | '') // Use literal type default
+      },
+      fundingInfo: {
+        fundingType: 'Double Close' as ('EMD' | 'Double Close' | 'Gap Funding' | 'Bridge Loan' | 'New Construction' | 'Rental Loan' | ''), // Use literal type
+        amountRequested: formData.amountNeeded || '',
+        lengthOfFunding: '',
+        projectedReturn: formData.offeredReturn || '',
+        exitStrategy: '' as ('Sell' | 'Refinance' | ''), // Use literal type default
+        purchasePrice: '',
+        rehabCost: '',
+        arv: ''
+      },
+      descriptionInfo: {
+        briefDescription: formData.additionalDetails || '',
+        marketDescription: '',
+        neighborhoodDescription: '',
+        investmentHighlights: '',
+        riskFactors: ''
+      },
+      attachments: [],
+      imageUrl: null
     };
 
     try {
-      const newDealId = await createDealDocument(dealData);
+      const newDealId = await createDealDocument(dealDataForFunction);
       if (newDealId) {
         console.log("Deal created successfully with ID:", newDealId);
-        navigate('/deal-room'); // Navigate to deal room on success
+        navigate('/deal-room');
       } else {
         throw new Error("Failed to create deal document.");
       }
     } catch (error) {
       console.error("Error submitting deal:", error);
-      alert("Failed to submit deal. Please try again."); // Simple error feedback
+      alert("Failed to submit deal. Please try again.");
     } finally {
       setIsSubmitting(false);
     }

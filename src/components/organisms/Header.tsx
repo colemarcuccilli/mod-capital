@@ -9,7 +9,12 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 // Register ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger);
 
-const Header: React.FC = () => {
+// Define props for Header
+interface HeaderProps {
+  toggleNotificationPanel: () => void; // Add the prop type
+}
+
+const Header: React.FC<HeaderProps> = ({ toggleNotificationPanel }) => {
   const headerRef = useRef<HTMLElement>(null);
   
   useEffect(() => {
@@ -58,7 +63,7 @@ const Header: React.FC = () => {
       <div className="container flex justify-between items-center">
         {/* Use AnimatedDomentraLogo directly (it contains the Link) */}
         <AnimatedDomentraLogo className="h-10 md:h-12" />
-        <Navigation />
+        <Navigation className="flex-grow flex justify-end" toggleNotificationPanel={toggleNotificationPanel} />
       </div>
     </header>
   );

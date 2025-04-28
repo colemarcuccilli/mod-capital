@@ -37,7 +37,7 @@ const GapForm: React.FC = () => {
     lastName: '',
     email: '',
     phone: '',
-    propertyType: 'Single Family',
+    propertyType: 'SFR',
     address: '',
     city: '',
     state: '',
@@ -83,34 +83,45 @@ const GapForm: React.FC = () => {
     setIsSubmitting(true);
     console.log("Submitting Gap Form Data:", formData);
 
-    // Prepare data for Firestore
-    const dealData: Omit<Deal, 'id' | 'createdAt'> = {
+    // Define allowed exit strategies for type checking
+    const allowedExitStrategies = ['Sell', 'Refinance', ''];
+    const validatedExitStrategy = allowedExitStrategies.includes(formData.exitStrategy) 
+        ? formData.exitStrategy as ('Sell' | 'Refinance' | '') // Cast if valid
+        : ''; // Default to empty string if invalid
+
+    const dealDataForFunction = {
       submitterUid: currentUser.uid,
       submitterRole: currentUserProfile.role,
-      status: 'active',
-      dealType: 'Gap',
-      // Map form fields
-      propertyType: formData.propertyType,
-      address: formData.address,
-      city: formData.city,
-      state: formData.state,
-      exitStrategy: formData.exitStrategy,
-      amountRequested: parseFloat(formData.amountNeeded) || 0,
-      offeredReturn: parseFloat(formData.offeredReturn) || 0,
-      dealLength: parseFloat(formData.dealLength) || 0,
-      lienPosition: formData.lienPosition,
-      // hasCollateral: formData.hasCollateral, // Need to map boolean/string?
-      // fundsUsage: formData.fundsUsage, 
-      // Optional fields
-      dealName: `Gap - ${formData.address}`,
-      description: formData.additionalDetails,
-      rehabEstimate: parseFloat(formData.rehabEstimate || '0') || 0,
-      arv: parseFloat(formData.arv || '0') || 0,
-      attachments: [], // TODO: Handle files
+      basicInfo: {
+        address: formData.address ?? '',
+        city: formData.city ?? '',
+        state: formData.state ?? '',
+        zip: '', 
+        propertyType: (formData.propertyType as any) || 'SFR',
+        condition: '' as ('Excellent' | 'Good' | 'Fair' | 'Poor' | 'Needs Full Rehab' | ''),
+        bedrooms: '', bathrooms: '', buildingSize: '', lotSize: '', 
+        ownershipStatus: '' as ('Owned' | 'Under Contract' | 'Making Offer' | 'Wholesaler' | '')
+      },
+      fundingInfo: {
+        fundingType: 'Gap Funding' as ('EMD' | 'Double Close' | 'Gap Funding' | 'Bridge Loan' | 'New Construction' | 'Rental Loan' | ''),
+        amountRequested: formData.amountNeeded || '', 
+        lengthOfFunding: formData.dealLength || '', 
+        projectedReturn: formData.offeredReturn || '', 
+        exitStrategy: validatedExitStrategy, // Use validated value
+        purchasePrice: '', 
+        rehabCost: formData.rehabEstimate || '', 
+        arv: formData.arv || '' 
+      },
+      descriptionInfo: {
+         briefDescription: formData.additionalDetails || '',
+         marketDescription: '', neighborhoodDescription: '', investmentHighlights: '', riskFactors: ''
+       },
+      attachments: [], // TODO: Handle file uploads
+      imageUrl: null 
     };
 
     try {
-      const newDealId = await createDealDocument(dealData);
+      const newDealId = await createDealDocument(dealDataForFunction);
       if (newDealId) {
         console.log("Deal created successfully with ID:", newDealId);
         navigate('/deal-room'); // Navigate to deal room on success

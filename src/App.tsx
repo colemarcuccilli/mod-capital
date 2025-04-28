@@ -19,6 +19,18 @@ import { AuthProvider } from './context/AuthContext';
 import DealRoom from './pages/DealRoom';
 import SubmitDeal from './pages/SubmitDeal';
 import Profile from './pages/Profile';
+import SubmitDealPage from './pages/SubmitDealPage';
+import ProtectedRoute from './components/atoms/ProtectedRoute';
+import AdminDashboard from './pages/AdminDashboard';
+import AdminDealQueuePage from './pages/AdminDealQueuePage';
+import AdminDealReviewPage from './pages/AdminDealReviewPage';
+import AdminRoute from './components/atoms/AdminRoute';
+import MyDealsPage from './pages/MyDealsPage';
+import FundedDealsPage from './pages/FundedDealsPage';
+import DocumentCenterPage from './pages/DocumentCenterPage';
+import NegotiationsPage from './pages/NegotiationsPage';
+import NegotiationHubPage from './pages/NegotiationHubPage';
+import NegotiationDetailPage from './pages/NegotiationDetailPage';
 
 // Register GSAP plugins globally
 gsap.registerPlugin(
@@ -82,10 +94,21 @@ const App: React.FC = () => {
               <Route path="/contact" element={<Contact />} />
               <Route path="/thank-you" element={<ThankYou />} />
               
-              {/* Protected Routes (Placeholder) */}
-              <Route path="/deal-room" element={<DealRoom />} />
-              <Route path="/submit-deal" element={<SubmitDeal />} />
-              <Route path="/profile" element={<Profile />} />
+              {/* User Protected Routes */}
+              <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+              <Route path="/deal-room" element={<ProtectedRoute><DealRoom /></ProtectedRoute>} />
+              <Route path="/submit-deal" element={<ProtectedRoute><SubmitDealPage /></ProtectedRoute>} />
+              <Route path="/my-deals" element={<ProtectedRoute><MyDealsPage /></ProtectedRoute>} />
+              <Route path="/funded-deals" element={<ProtectedRoute><FundedDealsPage /></ProtectedRoute>} />
+              <Route path="/document-center" element={<ProtectedRoute><DocumentCenterPage /></ProtectedRoute>} />
+              <Route path="/negotiations" element={<ProtectedRoute><NegotiationsPage /></ProtectedRoute>} />
+              <Route path="/negotiation-hub" element={<ProtectedRoute><NegotiationHubPage /></ProtectedRoute>} />
+              <Route path="/negotiations/:negotiationId" element={<ProtectedRoute><NegotiationDetailPage /></ProtectedRoute>} />
+              
+              {/* Admin Protected Routes */}
+              <Route path="/admin/review" element={<AdminRoute><AdminDealQueuePage /></AdminRoute>} />
+              <Route path="/admin/review/:dealId" element={<AdminRoute><AdminDealReviewPage /></AdminRoute>} />
+              <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
               
               {/* Additional pages */}
               {/* <Route path="/blog" element={<Blog />} /> */}

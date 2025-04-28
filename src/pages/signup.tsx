@@ -8,6 +8,8 @@ import { AuthError } from 'firebase/auth';
 
 // Define form input type
 type SignupFormInputs = {
+  firstName: string;
+  lastName: string;
   email: string;
   password: string;
   confirmPassword: string;
@@ -43,7 +45,13 @@ const Signup: React.FC = () => {
     setIsLoading(true);
     setFirebaseError(null);
     try {
-      const userCredential = await signUpWithEmail(data.email, data.password, data.role);
+      const userCredential = await signUpWithEmail(
+        data.email, 
+        data.password, 
+        data.firstName,
+        data.lastName,
+        data.role
+      );
       // --- Firestore user document creation is now handled inside signUpWithEmail ---
       console.log('User signed up & profile creation initiated for:', userCredential.user.uid);
       
@@ -83,6 +91,34 @@ const Signup: React.FC = () => {
                <option value="investor">Investor / Borrower</option>
                <option value="lender">Lender</option>
              </select>
+          </div>
+          
+          {/* Name Inputs */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="firstName" className="block text-sm font-medium text-primary mb-1">First Name</label>
+              <input
+                id="firstName"
+                type="text"
+                autoComplete="given-name"
+                required
+                className="input-field"
+                placeholder="First Name"
+                {...register("firstName", { required: "First name is required" })}
+              />
+            </div>
+            <div>
+              <label htmlFor="lastName" className="block text-sm font-medium text-primary mb-1">Last Name</label>
+              <input
+                id="lastName"
+                type="text"
+                autoComplete="family-name"
+                required
+                className="input-field"
+                placeholder="Last Name"
+                {...register("lastName", { required: "Last name is required" })}
+              />
+            </div>
           </div>
           
           {/* Email and Passwords */} 
@@ -132,9 +168,11 @@ const Signup: React.FC = () => {
           </div>
 
           {/* Display form errors */} 
-          {(errors.email || errors.password || errors.confirmPassword || errors.role || firebaseError) && (
+          {(errors.firstName || errors.lastName || errors.email || errors.password || errors.confirmPassword || errors.role || firebaseError) && (
             <div className="text-red-600 text-sm space-y-1">
               {errors.role && <p>{errors.role.message}</p>}
+              {errors.firstName && <p>{errors.firstName.message}</p>}
+              {errors.lastName && <p>{errors.lastName.message}</p>}
               {errors.email && <p>{errors.email.message}</p>}
               {errors.password && <p>{errors.password.message}</p>}
               {errors.confirmPassword && <p>{errors.confirmPassword.message}</p>}

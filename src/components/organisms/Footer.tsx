@@ -171,7 +171,7 @@ const Footer: React.FC = () => {
       links: [
         { name: 'About Us', path: '/about' },
         { name: 'Contact', path: '/contact' },
-        { name: 'Referrals', path: '/referrals' },
+        // { name: 'Referrals', path: '/referrals' },
         // { name: 'Blog', path: '/blog' }
       ]
     },
