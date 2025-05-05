@@ -2,18 +2,79 @@ import { doc, setDoc, serverTimestamp, getDoc, updateDoc, collection, addDoc, qu
 import { User } from "firebase/auth";
 import { db } from "./firebaseConfig"; // Import your Firebase db instance
 
+// --- Placeholder Detail Structures --- 
+// These should be refined based on the actual questions asked
+export interface BuyBoxDetails { 
+    markets?: string[]; // Q1
+    propertyTypes?: string[]; // Q2
+    strategy?: string[]; // Q3 (Now array for multiple)
+    strategyOther?: string; // Q3 Other text
+    priceMin?: number; // Q4 Min
+    priceMax?: number; // Q4 Max
+    rehabMin?: number; // Q5 Min
+    rehabMax?: number; // Q5 Max
+    fundingSources?: string[]; // Q6
+    fundingSourcesOther?: string; // Q6 Other text
+    dealsCompleted?: number | string; // Q7 (Allow string for ranges like '20+')
+    primaryGoals?: string[]; // Q8
+    primaryGoalsOther?: string; // Q8 Other text
+    dealsTarget12Months?: number | string; // Q9 (Allow string for ranges like '10+')
+    notificationPrefs?: string[]; // Q10
+    additionalInfo?: string; // Q11
+    // Add fields for Part 2 later if needed
+}
+export interface LendingCriteriaDetails {
+    fundingTypes?: string[];
+    regions?: string[];
+    loanMin?: number;
+    loanMax?: number;
+    ltvMax?: number;
+    arvMax?: number;
+    propertyTypes?: string[]; // Added from Part 1 form
+    reqBorrowerExperience?: string; // Added from Part 1 form
+    experienceDetails?: string; // Added from Part 1 form
+    closingTimeline?: string; // Added from Part 1 form
+    capitalToDeploy?: string; // Added from Part 1 form
+    notificationPrefs?: string[]; // Added from Part 1 form
+    additionalInfo?: string; // Added from Part 1 form
+    // Fields from Part 2
+    hmRatePoints?: string;
+    hmLoanTerm?: string; 
+    pmRatePoints?: string;
+    pmLoanTerm?: string;
+    equitySplit?: string;
+    equityPreferredReturn?: number;
+    equityHoldPeriod?: string;
+    // Fields from Part 3 (placeholders)
+    bridgeLoanTerms?: string;
+    conventionalLoanTerms?: string;
+    avoidedScenarios?: string;
+    // ... other criteria
+}
+export interface AgentProfileDetails {
+    primaryMarkets?: string[];
+    brokerage?: string;
+    // ... other relevant info
+}
+
 // Define the structure of our User Profile data in Firestore
 export interface UserProfile {
   uid: string;
   email: string | null;
   displayName: string | null;
   phoneNumber: string | null;
-  role: 'investor' | 'lender' | 'admin';
+  role: 'investor' | 'lender' | 'admin' | 'agent' | 'wholesaler' | 'owner' | 'other' | string; // Expanded roles
   isVerified: boolean;
-  createdAt: Timestamp; // Use Firestore Timestamp type
+  createdAt: Timestamp;
+  // Store initial onboarding answers if needed for context
+  initialQ2Answer?: string; 
+  // Detailed profile data collected post-signup
+  buyBox?: BuyBoxDetails;
+  lendingCriteria?: LendingCriteriaDetails;
+  agentProfile?: AgentProfileDetails; // Example for agent/wholesaler/owner
+  // Add other role-specific detail fields as needed
   bio?: string;
   profilePictureUrl?: string;
-  // Add other fields as needed later (e.g., company, experience)
 }
 
 // Export nested interfaces so they can be imported elsewhere
@@ -121,7 +182,10 @@ export interface NegotiationData {
  * @param user - The Firebase Auth User object.
  * @param additionalData - Any additional data to store (like role).
  */
-export const createUserProfileDocument = async (user: User, additionalData: { role: 'investor' | 'lender' }) => {
+export const createUserProfileDocument = async (user: User, additionalData: { 
+    role: UserProfile['role']; // Use expanded role type
+    initialQ2Answer?: string; // Add optional Q2 answer
+ }) => {
   if (!user) return;
 
   // Get a reference to the document path: /users/{userId}
@@ -135,6 +199,8 @@ export const createUserProfileDocument = async (user: User, additionalData: { ro
     const { email, displayName, phoneNumber, uid } = user;
     const createdAt = serverTimestamp(); // Get Firestore server timestamp
     const isVerified = false; // Default to not verified
+    const role = additionalData.role; // Get role from param
+    const initialQ2Answer = additionalData.initialQ2Answer; // Get Q2 from param
 
     try {
       // Create the document with initial data
@@ -145,9 +211,15 @@ export const createUserProfileDocument = async (user: User, additionalData: { ro
         phoneNumber: phoneNumber || '', // Use provided phone or empty string
         profilePictureUrl: null, // Initialize as null
         bio: '', // Initialize as empty
+        role, // Save the role
+        initialQ2Answer: initialQ2Answer || null, // Save Q2 answer or null
         isVerified,
         createdAt,
-        ...additionalData // Merge role and any other data passed
+        // Add empty placeholders for detailed profiles based on role
+        ...(role === 'investor' && { buyBox: {} }),
+        ...(role === 'lender' && { lendingCriteria: {} }),
+        ...((role === 'agent' || role === 'wholesaler' || role === 'owner') && { agentProfile: {} })
+        // Do NOT spread additionalData directly anymore
       });
       console.log("User profile created in Firestore for UID:", uid);
     } catch (error) {
@@ -206,9 +278,10 @@ export const fetchUserProfile = async (uid: string): Promise<UserProfile | null>
  * @param dealData - The data for the new deal (excluding id, createdAt).
  */
 export const createDealDocument = async (
-    dealData: { // Define input param type inline for clarity
+    dealData: { 
         submitterUid: string;
-        submitterRole: 'investor' | 'lender' | 'admin';
+        // Accept wider range of roles from UserProfile
+        submitterRole: UserProfile['role']; 
         basicInfo: BasicPropertyInfo;
         fundingInfo: FundingDetails;
         descriptionInfo: DescriptionInfo;
@@ -580,6 +653,55 @@ export const submitCounterProposal = async (
     console.error(`[Firestore] Error submitting counter-proposal for negotiation ${negotiationId}:`, error);
     throw new Error("Failed to submit counter-proposal."); // Re-throw for frontend handling
   }
+};
+
+// --- Function to update user profile with detailed data (post-signup Q&A) ---
+export const updateUserProfileDetails = async (uid: string, details: Partial<UserProfile>) => {
+    if (!uid) {
+        console.error("updateUserProfileDetails: No UID provided.");
+        return false;
+    }
+    // Exclude fields that shouldn't be overwritten directly here like uid, email, createdAt, role, isVerified
+    const { 
+        uid: excludedUid,
+        email,
+        createdAt,
+        role,
+        isVerified,
+        ...updatableDetails 
+    } = details;
+
+    // Ensure we only pass fields defined in UserProfile (like buyBox, lendingCriteria etc.)
+    // This prevents accidentally trying to save arbitrary data from the Q&A flow.
+    const validUpdateData: Partial<UserProfile> = {};
+    if (updatableDetails.buyBox) validUpdateData.buyBox = updatableDetails.buyBox;
+    if (updatableDetails.lendingCriteria) validUpdateData.lendingCriteria = updatableDetails.lendingCriteria;
+    if (updatableDetails.agentProfile) validUpdateData.agentProfile = updatableDetails.agentProfile;
+    if (updatableDetails.initialQ2Answer) validUpdateData.initialQ2Answer = updatableDetails.initialQ2Answer; // Allow updating this if needed
+    if (updatableDetails.bio) validUpdateData.bio = updatableDetails.bio;
+    if (updatableDetails.phoneNumber) validUpdateData.phoneNumber = updatableDetails.phoneNumber;
+    if (updatableDetails.displayName) validUpdateData.displayName = updatableDetails.displayName;
+    // Add other permitted fields here
+
+    if (Object.keys(validUpdateData).length === 0) {
+        console.warn("updateUserProfileDetails: No valid data provided for update.");
+        return true; // No update needed, consider it successful
+    }
+
+    const userDocRef = doc(db, "users", uid);
+    console.log(`[Firestore] Updating profile for ${uid} with:`, validUpdateData);
+    try {
+        // Use updateDoc to merge data without overwriting the entire document
+        await updateDoc(userDocRef, { 
+            ...validUpdateData,
+            updatedAt: serverTimestamp() // Add an updated timestamp
+         });
+        console.log(`User profile details updated successfully for UID: ${uid}`);
+        return true;
+    } catch (error) {
+        console.error(`Error updating user profile details for UID ${uid}:`, error);
+        return false;
+    }
 };
 
 // Add other Firestore functions later (e.g., fetchUserProfile, createDeal, getDeals) 

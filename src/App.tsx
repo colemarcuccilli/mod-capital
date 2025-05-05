@@ -11,7 +11,6 @@ import ScrollToTop from './utils/ScrollToTop';
 import IntroAnimation from './components/organisms/IntroAnimation';
 import ThankYou from './pages/ThankYou';
 import Login from './pages/login';
-import Signup from './pages/signup';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
@@ -78,7 +77,7 @@ const App: React.FC = () => {
         <IntroAnimation onComplete={handleIntroComplete} />
       )}
       
-      {/* Wrap the entire Router/App with AuthProvider */}
+      {/* AuthProvider wraps the entire Router */}
       <AuthProvider>
         <Router>
           <ScrollToTop />
@@ -86,7 +85,7 @@ const App: React.FC = () => {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
+              {/* <Route path="/signup" element={<Signup />} /> */}
               <Route path="/double-close" element={<DoubleClose />} />
               <Route path="/emd" element={<EMD />} />
               <Route path="/gap" element={<Gap />} />
@@ -94,7 +93,6 @@ const App: React.FC = () => {
               <Route path="/contact" element={<Contact />} />
               <Route path="/thank-you" element={<ThankYou />} />
               
-              {/* User Protected Routes */}
               <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
               <Route path="/deal-room" element={<ProtectedRoute><DealRoom /></ProtectedRoute>} />
               <Route path="/submit-deal" element={<ProtectedRoute><SubmitDealPage /></ProtectedRoute>} />
@@ -105,16 +103,9 @@ const App: React.FC = () => {
               <Route path="/negotiation-hub" element={<ProtectedRoute><NegotiationHubPage /></ProtectedRoute>} />
               <Route path="/negotiations/:negotiationId" element={<ProtectedRoute><NegotiationDetailPage /></ProtectedRoute>} />
               
-              {/* Admin Protected Routes */}
+              <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
               <Route path="/admin/review" element={<AdminRoute><AdminDealQueuePage /></AdminRoute>} />
               <Route path="/admin/review/:dealId" element={<AdminRoute><AdminDealReviewPage /></AdminRoute>} />
-              <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
-              
-              {/* Additional pages */}
-              {/* <Route path="/blog" element={<Blog />} /> */}
-              
-              {/* 404 Page */}
-              {/* <Route path="*" element={<NotFound />} /> */}
             </Routes>
           </MainLayout>
         </Router>

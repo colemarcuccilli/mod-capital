@@ -10,17 +10,21 @@ import IconWrapper from '../atoms/IconWrapper';
 gsap.registerPlugin(TextPlugin, ScrollToPlugin);
 
 interface HeroProps {
-  subtitle: string;
+  scrollingPhrases?: string[];
+  subtitle?: string;
   ctaText: string;
   ctaLink: string;
+  onCtaClick?: () => void;
   backgroundImage?: string;
   className?: string;
 }
 
 const Hero: React.FC<HeroProps> = ({
+  scrollingPhrases,
   subtitle = "Simple Funding Solutions for Real Estate Investors",
   ctaText = "View Funding Solutions",
-  ctaLink,
+  ctaLink = "#",
+  onCtaClick,
   backgroundImage,
   className = ''
 }) => {
@@ -31,8 +35,10 @@ const Hero: React.FC<HeroProps> = ({
   const ctaRef = useRef<HTMLDivElement>(null);
   const scrollButtonRef = useRef<HTMLButtonElement>(null);
   
-  // Loan types for rotation
-  const loanTypes = ["EMD Funding", "Double Close Funding", "Gap Funding", "Private Money Loan"];
+  // Use provided phrases or a default list if none provided
+  const phrasesToRotate = scrollingPhrases && scrollingPhrases.length > 0 
+      ? scrollingPhrases 
+      : ["EMD Funding", "Double Close Funding", "Gap Funding", "Private Money Loan"];
   
   // Handle scroll button click
   const handleScrollClick = () => {
@@ -72,27 +78,36 @@ const Hero: React.FC<HeroProps> = ({
         duration: 0.8
       }, "-=0.5");
       
-      // Set up rotating text animation
+      // Set up rotating text animation using phrasesToRotate
       const rotatingTextTl = gsap.timeline({
         repeat: -1,
         repeatDelay: 0.5,
-        delay: 1
+        delay: 1,
+        paused: true,
       });
+
+      // Clear previous text content immediately if phrases change
+      if(rotatingTextRef.current) rotatingTextRef.current.textContent = '';
       
-      loanTypes.forEach(type => {
+      phrasesToRotate.forEach((phrase, index) => {
         rotatingTextTl.to(rotatingTextRef.current, {
           duration: 0.5,
           text: {
-            value: type,
+            value: phrase,
             delimiter: ""
           },
-          ease: "power2.out"
+          ease: "none",
         })
         .to(rotatingTextRef.current, {
           duration: 2,
           ease: "none"
         });
       });
+
+      // Ensure the animation starts if it was created
+      if (rotatingTextTl) {
+          rotatingTextTl.play();
+      }
       
       // Scroll button animation
       if (scrollButtonRef.current) {
@@ -114,8 +129,14 @@ const Hero: React.FC<HeroProps> = ({
           ease: "sine.inOut"
         });
       }
+
+      // Cleanup function
+      return () => {
+          rotatingTextTl?.kill();
+          gsap.killTweensOf(scrollButtonRef.current);
+      };
     }
-  }, []);
+  }, [phrasesToRotate]);
   
   // Background parallax effect
   useEffect(() => {
@@ -140,7 +161,7 @@ const Hero: React.FC<HeroProps> = ({
   return (
     <div 
       ref={heroRef}
-      className={`relative min-h-screen flex items-center justify-center overflow-hidden pt-16 ${className}`}
+      className={`relative flex items-center justify-center overflow-hidden pt-16 ${className} py-20 md:py-32`}
     >
       {/* Background with Overlay */}
       {backgroundImage ? (
@@ -159,21 +180,27 @@ const Hero: React.FC<HeroProps> = ({
         <div className="max-w-4xl mx-auto text-center">
           <h1 
             ref={titleRef}
-            className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-primary"
+            className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-primary h-20 md:h-24 lg:h-28"
           >
             <span ref={rotatingTextRef} className="text-primary"></span>
           </h1>
           
+          {!scrollingPhrases && (
           <p 
             ref={subtitleRef}
             className="text-xl md:text-2xl text-primary/80 mb-10"
           >
             {subtitle}
           </p>
+          )}
+          {scrollingPhrases && (
+            <div ref={subtitleRef} className="h-[calc(1.5rem*1.5*2+2.5rem)] md:h-[calc(1.75rem*1.5*2+2.5rem)]"></div>
+          )}
           
           <div ref={ctaRef}>
             <AnimatedButton 
-              to={ctaLink}
+              to={onCtaClick ? '#' : ctaLink}
+              onClick={onCtaClick}
               className="text-lg"
             >
               {ctaText}

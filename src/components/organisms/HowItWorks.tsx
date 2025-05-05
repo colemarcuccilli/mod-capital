@@ -3,41 +3,28 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { FiFileText, FiCheckSquare, FiLifeBuoy, FiDollarSign, FiArrowDown, FiPhoneCall, FiUsers } from 'react-icons/fi';
 import IconWrapper from '../atoms/IconWrapper';
+import AnimatedButton from '../atoms/AnimatedButton';
 
 // Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger);
 
+// Define structure locally OR import from Home.tsx if types are centralized
 interface Step {
   icon: React.ReactNode;
   title: string;
   description: string;
 }
 
-const HowItWorks: React.FC = () => {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const stepsRef = useRef<(HTMLDivElement | null)[]>([]);
-  const mobileStepsRef = useRef<(HTMLDivElement | null)[]>([]);
-  
-  // Reset refs
-  stepsRef.current = [];
-  mobileStepsRef.current = [];
-  
-  // Add to refs
-  const addToStepsRef = (el: HTMLDivElement | null) => {
-    if (el && !stepsRef.current.includes(el)) {
-      stepsRef.current.push(el);
-    }
-  };
-  
-  const addToMobileStepsRef = (el: HTMLDivElement | null) => {
-    if (el && !mobileStepsRef.current.includes(el)) {
-      mobileStepsRef.current.push(el);
-    }
-  };
-  
-  // Updated Steps Data
-  const steps: Step[] = [
+// Update props to accept optional personalized content and CTA
+interface HowItWorksProps {
+  title?: string; // Optional title override
+  steps?: Step[]; // Optional steps override
+  ctaText?: string; // Optional CTA text
+  onCtaClick?: () => void; // Optional CTA click handler
+}
+
+// Default Steps (internal fallback)
+const defaultSteps: Step[] = [
     {
       icon: <IconWrapper name="FiFileText" size={24} className="text-background" />,
       title: "Request Funding",
@@ -59,6 +46,41 @@ const HowItWorks: React.FC = () => {
       description: "After contracts are signed"
     }
   ];
+
+// Default title (internal fallback)
+const defaultTitle = "How <span class=\'text-accent\'>Funding</span> Works";
+
+const HowItWorks: React.FC<HowItWorksProps> = ({
+  title: personalizedTitle,
+  steps: personalizedSteps,
+  ctaText,
+  onCtaClick
+}) => {
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const stepsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const mobileStepsRef = useRef<(HTMLDivElement | null)[]>([]);
+
+  // Use personalized props or fallback to defaults
+  const currentTitle = personalizedTitle || defaultTitle;
+  const currentSteps = personalizedSteps && personalizedSteps.length > 0 ? personalizedSteps : defaultSteps;
+  
+  // Reset refs (important if props change)
+  stepsRef.current = [];
+  mobileStepsRef.current = [];
+  
+  // Add to refs
+  const addToStepsRef = (el: HTMLDivElement | null) => {
+    if (el && !stepsRef.current.includes(el)) {
+      stepsRef.current.push(el);
+    }
+  };
+  
+  const addToMobileStepsRef = (el: HTMLDivElement | null) => {
+    if (el && !mobileStepsRef.current.includes(el)) {
+      mobileStepsRef.current.push(el);
+    }
+  };
   
   // Toggle mobile step expansion
   const toggleMobileStep = (index: number) => {
@@ -229,7 +251,7 @@ const HowItWorks: React.FC = () => {
       ctx.revert();
       ScrollTrigger.getAll().forEach(trigger => trigger.kill());
     };
-  }, []);
+  }, [currentTitle, currentSteps]);
   
   return (
     <section 
@@ -249,13 +271,14 @@ const HowItWorks: React.FC = () => {
           <h2 
             ref={titleRef} 
             className="text-3xl md:text-4xl font-bold text-center mb-16 text-primary"
+            dangerouslySetInnerHTML={{ __html: currentTitle }}
           >
-            How <span className="text-accent">Funding</span> Works
+            {/* Content set by dangerouslySetInnerHTML */}
           </h2>
           
           {/* Mobile View (Interactive expandable steps) */}
           <div className="block md:hidden space-y-3 px-4">
-            {steps.map((step, index) => (
+            {currentSteps.map((step, index) => (
               <div 
                 key={index} 
                 ref={addToMobileStepsRef}
@@ -281,7 +304,7 @@ const HowItWorks: React.FC = () => {
           <div className="hidden md:block relative">
             {/* Step Boxes */}
             <div className="grid grid-cols-4 gap-2 relative steps-grid">
-              {steps.map((step, index) => (
+              {currentSteps.map((step, index) => (
                 <div 
                   key={index}
                   ref={addToStepsRef}
@@ -316,6 +339,15 @@ const HowItWorks: React.FC = () => {
               ))}
             </div>
           </div>
+
+          {/* Optional CTA Button */}
+          {ctaText && onCtaClick && (
+            <div className="text-center mt-12">
+              <AnimatedButton to="#" onClick={onCtaClick} className="text-lg">
+                {ctaText}
+              </AnimatedButton>
+            </div>
+          )}
         </div>
       </div>
     </section>

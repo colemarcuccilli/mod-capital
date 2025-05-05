@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { FiPlus, FiMinus, FiHelpCircle } from 'react-icons/fi';
@@ -7,415 +7,152 @@ import IconWrapper from '../atoms/IconWrapper';
 // Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger);
 
-interface FAQ {
+// Match interface from Home.tsx
+interface FAQItemStructure {
   question: string;
   answer: string;
 }
 
-const FAQs: React.FC = () => {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const faqItemsRef = useRef<(HTMLDivElement | null)[]>([]);
-  const overlayRef = useRef<HTMLDivElement>(null);
+interface FAQItemProps {
+  question: string;
+  answer: string;
+  index: number;
+  addToRefs: (el: HTMLDivElement | null) => void;
+}
+
+// Single FAQ Item component for managing its own state and animation
+const FAQItem: React.FC<FAQItemProps> = ({ question, answer, index, addToRefs }) => {
+    const [isOpen, setIsOpen] = useState(false);
+    const answerRef = useRef<HTMLDivElement>(null);
+    const itemRef = useRef<HTMLDivElement>(null);
   
-  // Reset refs
-  faqItemsRef.current = [];
-  
-  // Add to refs
-  const addToFaqItemsRef = (el: HTMLDivElement | null) => {
-    if (el && !faqItemsRef.current.includes(el)) {
-      faqItemsRef.current.push(el);
-    }
-  };
-  
-  // Updated FAQs Data
-  const faqs: FAQ[] = [
-    {
-      question: "What do we charge?",
-      answer: "Domentra operates primarily on a Matchmaking Fee model. This fee can be paid upfront or, more commonly, added to the total loan amount and paid at closing."
-    },
-    {
-      question: "Are there any upfront fees?",
-      answer: "Typically, no. Our standard Matchmaking Fee is usually incorporated into the loan and paid at closing. In specific circumstances, an upfront fee might be discussed, but it's not our standard practice."
-    },
-    {
-      question: "How long does it take to get funded?",
-      answer: "Funding times vary, but after contracts are signed by the Borrower, Lender, and Domentra, the lender typically funds the deal promptly, often within 48 hours or less depending on the specifics."
-    },
-    {
-      question: "Does Domentra fund the deals?",
-      answer: "Domentra connects borrowers with capital partners (lenders). While Domentra facilitates the process and is a party to the contracts, the actual funding comes directly from the matched lender."
-    },
-    {
-      question: "What is the funding process?",
-      answer: "1. Borrower Submits Funding Request. 2. Domentra contacts them with questions, negotiation, or status updates. 3. Once matched, Borrower, Lender & Domentra Sign Contracts. 4. Lender funds the borrower's deal."
-    }
-  ];
-  
-  // Toggle FAQ expansion with improved animation
-  const toggleFAQ = (index: number) => {
-    const faqItem = faqItemsRef.current[index];
-    if (!faqItem) return;
-    
-    // First, collapse any open FAQs
-    faqItemsRef.current.forEach((item, i) => {
-      if (i !== index && item?.classList.contains('expanded')) {
-        // Find elements to animate
-        const answer = item.querySelector('.faq-answer');
-        const plusIcon = item.querySelector('.plus-icon');
-        const minusIcon = item.querySelector('.minus-icon');
-        
-        if (answer && plusIcon && minusIcon) {
-          // Collapse animation - with fixed values to prevent layout shifts
-          gsap.to(answer, {
-            height: 0,
-            marginTop: 0,
-            duration: 0.3,
-            ease: "power2.out",
-            clearProps: "height"
-          });
-          
-          // Icon animation
-          gsap.to(plusIcon, {
-            autoAlpha: 1,
-            duration: 0.2
-          });
-          gsap.to(minusIcon, {
-            autoAlpha: 0,
-            duration: 0.2
-          });
+    const toggleOpen = () => {
+        setIsOpen(!isOpen);
+    };
+
+    useEffect(() => {
+        if (!answerRef.current) return;
+        if (isOpen) {
+            gsap.to(answerRef.current, { height: 'auto', opacity: 1, duration: 0.3, ease: 'power2.out', marginTop: '0.75rem' });
+        } else {
+            gsap.to(answerRef.current, { height: 0, opacity: 0, duration: 0.3, ease: 'power2.in', marginTop: 0 });
         }
-        
-        // Reset any transforms or styles 
-        gsap.to(item, {
-          y: 0, 
-          backgroundColor: '#FFFFFA',
-          boxShadow: '0 4px 16px rgba(0, 0, 0, 0.08)',
-          duration: 0.3
-        });
-        
-        // Remove expanded class
-        item.classList.remove('expanded');
-      }
-    });
-    
-    // Now toggle the target FAQ
-    const isExpanded = faqItem.classList.contains('expanded');
-    
-    // Find elements to animate
-    const answer = faqItem.querySelector('.faq-answer');
-    const plusIcon = faqItem.querySelector('.plus-icon');
-    const minusIcon = faqItem.querySelector('.minus-icon');
-    
-    if (!answer || !plusIcon || !minusIcon) return;
-    
-    if (isExpanded) {
-      // Collapse animation
-      gsap.to(answer, {
-        height: 0,
-        marginTop: 0,
-        duration: 0.3,
-        ease: "power2.out",
-        clearProps: "height" // This is important to prevent layout issues
-      });
+    }, [isOpen]);
+
+    // Add ref to parent array
+    useEffect(() => {
+        addToRefs(itemRef.current);
+    }, [addToRefs]);
+
+    return (
+        <div ref={itemRef} className="faq-item-wrapper mb-4">
+             {/* Add border and ensure bg color applies */}
+            <div
+                className={`faq-item bg-white dark:bg-gray-800 rounded-xl shadow-md dark:shadow-lg p-5 cursor-pointer border dark:border-gray-700 transition-shadow duration-300 ${isOpen ? 'shadow-lg' : 'hover:shadow-lg'}`}
+                onClick={toggleOpen}
+            >
+                <div className="flex items-center justify-between">
+                    <h3 className="text-lg md:text-xl font-semibold text-primary dark:text-white pr-4">
+                        {question}
+                    </h3>
+                    <div className="relative flex-shrink-0 w-6 h-6 text-accent dark:text-accent-light">
+                        <IconWrapper name="FiPlus" size={24} className={`absolute transition-opacity duration-300 ${isOpen ? 'opacity-0' : 'opacity-100'}`} />
+                        <IconWrapper name="FiMinus" size={24} className={`absolute transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0'}`} />
+                    </div>
+                </div>
+                <div ref={answerRef} className="faq-answer overflow-hidden h-0 opacity-0">
+                    <p className="text-primary/80 dark:text-gray-300 pt-3">{answer}</p>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+// Add props to FAQs component
+interface FAQsProps {
+    faqs: FAQItemStructure[]; // Expect an array of FAQs
+}
+
+const FAQs: React.FC<FAQsProps> = ({ faqs }) => { // Destructure props
+    const sectionRef = useRef<HTMLDivElement>(null);
+    const titleRef = useRef<HTMLHeadingElement>(null);
+    const faqListRef = useRef<HTMLDivElement>(null);
+    const faqItemRefs = useRef<(HTMLDivElement | null)[]>([]);
       
-      // Icon animation
-      gsap.to(plusIcon, {
-        autoAlpha: 1,
-        duration: 0.2
-      });
-      gsap.to(minusIcon, {
-        autoAlpha: 0,
-        duration: 0.2
-      });
-      
-      // Reset any transforms or styles
-      gsap.to(faqItem, {
-        y: 0,
-        backgroundColor: '#FFFFFA',
-        boxShadow: '0 4px 16px rgba(0, 0, 0, 0.08)',
-        duration: 0.3
-      });
-      
-      // Remove expanded class
-      faqItem.classList.remove('expanded');
-    } else {
-      // First measure the content height properly
-      gsap.set(answer, { 
-        display: 'block',
-        autoAlpha: 0,
-        height: 'auto'
-      });
-      
-      // Get the natural height (with proper type assertion)
-      const height = (answer as HTMLElement).offsetHeight;
-      
-      // Reset and animate to the precise height
-      gsap.set(answer, { 
-        autoAlpha: 0,
-        height: 0,
-        marginTop: 0
-      });
-      
-      // Expand animation with precise height
-      gsap.to(answer, {
-        height: height,
-        autoAlpha: 1,
-        marginTop: "0.75rem",
-        duration: 0.3,
-        ease: "power2.out"
-      });
-      
-      // Icon animation
-      gsap.to(plusIcon, {
-        autoAlpha: 0,
-        duration: 0.2
-      });
-      gsap.to(minusIcon, {
-        autoAlpha: 1,
-        duration: 0.2
-      });
-      
-      // Add a subtle highlight to the expanded item
-      gsap.to(faqItem, {
-        backgroundColor: '#FFFFFA',
-        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.12)',
-        duration: 0.3
-      });
-      
-      // Add expanded class
-      faqItem.classList.add('expanded');
+    // Reset refs array on mount
+    faqItemRefs.current = []; 
+    const addToRefs = (el: HTMLDivElement | null) => {
+        if (el && !faqItemRefs.current.includes(el)) {
+             faqItemRefs.current.push(el);
     }
   };
   
   useEffect(() => {
-    // Don't run animations if user prefers reduced motion
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const sectionEl = sectionRef.current;
+        const titleEl = titleRef.current;
+        const listEl = faqListRef.current;
+
+        if (!sectionEl || !titleEl || !listEl) return;
     
     const ctx = gsap.context(() => {
-      // Create floating particle effect for background (only for desktop)
-      if (!prefersReducedMotion && window.innerWidth >= 768) {
-        const particles = gsap.utils.toArray<HTMLElement>('.particle');
-        particles.forEach((particle) => {
-          if (particle) {
-            const xRange = gsap.utils.random(10, 30);
-            const yRange = gsap.utils.random(10, 30);
-            const rotRange = gsap.utils.random(10, 90);
-            const duration = gsap.utils.random(5, 10);
-            
-            gsap.to(particle, {
-              x: `+=${xRange}`,
-              y: `+=${yRange}`,
-              rotation: rotRange,
-              duration: duration,
-              repeat: -1,
-              yoyo: true,
-              ease: "sine.inOut"
-            });
-          }
-        });
-      }
-      
-      // Parallax overlay
-      if (overlayRef.current) {
-        gsap.to(overlayRef.current, {
-          opacity: 0.7,
-          yPercent: -30,
+            // Section entrance
+            gsap.from(sectionEl, {
+                opacity: 0, 
+                y: 50, 
+                duration: 0.8, 
+                ease: 'power3.out',
           scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: true,
+                    trigger: sectionEl, 
+                    start: "top 85%" 
           }
         });
-      }
-      
-      // Title animation
-      if (titleRef.current) {
-        const titleSpan = titleRef.current.querySelector('span');
-        if (titleSpan) {
-          gsap.fromTo(titleSpan, 
-            { 
-              y: 40,
+
+            // Animate FAQ items only after refs are populated
+            // We use the refs array collected by the FAQItem component
+             gsap.from(faqItemRefs.current, {
               opacity: 0,
-              rotation: 5
-            },
-            {
-              y: 0,
-              opacity: 1,
-              rotation: 0,
-              duration: 1,
-              ease: "power3.out",
+                 y: 30,
+                 duration: 0.6,
+                 stagger: 0.1,
+                 ease: 'power2.out',
               scrollTrigger: {
-                trigger: titleRef.current,
+                     trigger: listEl, // Trigger when the list container is in view
                 start: "top 85%",
               }
-            }
-          );
-        }
-      }
-      
-      // FAQ item entrance animations
-      if (faqItemsRef.current.length) {
-        faqItemsRef.current.forEach((faqItem, index) => {
-          if (!faqItem) return;
-          
-          // Alternating slide-in animation from left and right
-          const isEven = index % 2 === 0;
-          gsap.fromTo(faqItem,
-            { 
-              x: isEven ? -50 : 50,
-              opacity: 0,
-              scale: 0.95
-            },
-            { 
-              x: 0,
-              opacity: 1,
-              scale: 1,
-              duration: 0.6,
-              delay: 0.1 * index,
-              ease: "power2.out",
-              scrollTrigger: {
-                trigger: sectionRef.current,
-                start: "top 75%",
-              }
-            }
-          );
-          
-          // Initialize answer height and icon state
-          const answer = faqItem.querySelector('.faq-answer');
-          const minusIcon = faqItem.querySelector('.minus-icon');
-          
-          if (answer && minusIcon) {
-            gsap.set(answer, { height: 0, marginTop: 0, display: 'none' });
-            gsap.set(minusIcon, { autoAlpha: 0 });
-          }
-          
-          // Remove hover effect since they're already white
-          
-          // Add click handler
-          const clickHandler = () => toggleFAQ(index);
-          faqItem.addEventListener('click', clickHandler);
-          
-          // Store handler for cleanup
-          faqItem.setAttribute('data-handler-index', index.toString());
-        });
-      }
+             });
+
     }, sectionRef);
     
-    return () => {
-      // Proper cleanup 
-      ctx.revert();
-      
-      // Clean up event listeners
-      faqItemsRef.current.forEach(item => {
-        if (item) {
-          const index = parseInt(item.getAttribute('data-handler-index') || '-1');
-          if (index !== -1) {
-            const clickHandler = () => toggleFAQ(index);
-            item.removeEventListener('click', clickHandler);
-          }
-        }
-      });
-      
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
-    };
-  }, []);
+        return () => ctx.revert();
+    }, [faqs.length]); // Empty dependency array, runs once on mount
   
   return (
-    <section 
-      ref={sectionRef}
-      id="faqs"
-      className="relative py-20 bg-gray-50 overflow-hidden"
-    >
-      {/* Particle Background - Use accent (Bittersweet) and secondary (Poix) */}
-      <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-gray-50 to-gray-100">
-        {[...Array(15)].map((_, i) => (
-          <div 
-            key={i}
-            className="particle absolute w-6 h-6 rounded-full"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              // Use accent and secondary colors with low opacity
-              backgroundColor: Math.random() > 0.5 ? 'rgba(255, 102, 102, 0.1)' : 'rgba(201, 87, 229, 0.1)',
-              transform: `scale(${Math.random() * 2 + 0.5})`,
-              opacity: Math.random() * 0.5 + 0.1
-            }}
-          />
-        ))}
+        <section ref={sectionRef} id="faqs" className="py-20 md:py-28 bg-gray-50 dark:bg-gray-900 opacity-100">
+            <div className="container mx-auto px-4 relative z-10">
+                 <div className="text-center mb-16">
+                    <div className="inline-block p-3 bg-accent/10 dark:bg-accent/20 rounded-full mb-3">
+                        <IconWrapper name="FiHelpCircle" size={32} className="text-accent dark:text-accent-light" />
       </div>
-      
-      {/* Parallax Overlay - Use primary color (Rich Black) */}
-      <div 
-        ref={overlayRef}
-        className="absolute inset-0 opacity-0 pointer-events-none"
-        style={{
-          background: 'radial-gradient(circle at 50% 50%, rgba(13, 19, 33, 0.1) 0%, rgba(13, 19, 33, 0.05) 100%)', // Rich Black
-        }}
-      />
-      
-      {/* Large decorative ring - Use accent (Bittersweet) and primary (Rich Black) */}
-      <div className="absolute right-0 top-0 w-96 h-96 rounded-full border-4 border-accent/10 -mr-48 -mt-48 transform rotate-45" />
-      <div className="absolute left-0 bottom-0 w-72 h-72 rounded-full border-4 border-primary/10 -ml-36 -mb-36 transform -rotate-12" />
-      
-      <div className="container relative z-10">
-        <div className="text-center">
-          <div className="flex items-center justify-center mb-3">
-            <div className="relative">
-              {/* Use accent color (Bittersweet) */}
-              <div className="absolute inset-0 bg-accent/20 blur-xl rounded-full"></div>
-              <IconWrapper name="FiHelpCircle" size={32} className="text-accent relative z-10" />
-            </div>
-          </div>
-          <h2 
-            ref={titleRef}
-            // Use primary text color (Rich Black)
-            className="text-3xl md:text-4xl font-bold mb-2 text-primary"
-          >
-            {/* Use accent text color (Bittersweet) */}
-            <span className="text-accent">
-              Funding Questions
-            </span>
+                    <h2 ref={titleRef} className="text-3xl md:text-4xl font-bold text-primary dark:text-white">
+                        Frequently Asked <span className="text-accent dark:text-accent-light">Questions</span>
           </h2>
-          {/* Use primary text color (Rich Black) with opacity */}
-          <p className="text-primary/80 max-w-2xl mx-auto mb-12">
-            Get answers to the most common questions about our funding solutions and process.
-          </p>
         </div>
         
-        {/* FAQ Items */}
-        <div className="max-w-3xl mx-auto relative">
+                <div ref={faqListRef} className="max-w-3xl mx-auto">
           {faqs.map((faq, index) => (
-            <div
+                        <FAQItem 
               key={index}
-              ref={addToFaqItemsRef}
-              // Use background color (Baby Powder) for FAQ item
-              className="faq-item backdrop-blur-sm bg-background rounded-xl shadow-md p-5 mb-4 cursor-pointer hover:shadow-lg transition-shadow duration-300"
-            >
-              <div className="flex items-center justify-between">
-                {/* Use primary text color (Rich Black) */}
-                <h3 className="text-lg md:text-xl font-semibold text-primary pr-4">
-                  {faq.question}
-                </h3>
-                <div className="relative flex-shrink-0 w-6 h-6">
-                  {/* Use accent color (Bittersweet) for icons */}
-                  <div className="plus-icon absolute inset-0">
-                    <IconWrapper name="FiPlus" size={24} className="text-accent" />
-                  </div>
-                  <div className="minus-icon absolute inset-0 opacity-0">
-                    <IconWrapper name="FiMinus" size={24} className="text-accent" />
-                  </div>
-                </div>
-              </div>
-              <div className="faq-answer overflow-hidden h-0 mt-0 hidden">
-                {/* Use primary text color (Rich Black) with opacity */}
-                <p className="text-primary/80">{faq.answer}</p>
+                            question={faq.question} 
+                            answer={faq.answer} 
+                            index={index}
+                            addToRefs={addToRefs} // Pass the function to collect refs
+                        />
+                    ))}
               </div>
             </div>
-          ))}
-        </div>
-      </div>
+             {/* Decorative elements - optional */}
+            <div className="absolute right-0 top-0 w-96 h-96 rounded-full border-4 border-accent/10 dark:border-accent/20 -mr-48 -mt-48 transform rotate-45 opacity-30 dark:opacity-20 pointer-events-none" />
+            <div className="absolute left-0 bottom-0 w-72 h-72 rounded-full border-4 border-primary/10 dark:border-gray-700/50 -ml-36 -mb-36 transform -rotate-12 opacity-30 dark:opacity-20 pointer-events-none" />
     </section>
   );
 };

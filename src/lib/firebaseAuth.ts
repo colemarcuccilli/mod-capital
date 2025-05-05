@@ -10,11 +10,9 @@ import {
   UserCredential // Import UserCredential type
 } from "firebase/auth";
 import { app } from "./firebaseConfig";
-import { createUserProfileDocument } from "./firebaseFirestore";
+import { UserProfile, createUserProfileDocument } from "./firebaseFirestore";
 
 const auth = getAuth(app);
-
-// TODO: Add Firestore logic to create user profile doc on signup
 
 /**
  * Signs up a new user with email and password.
@@ -24,9 +22,17 @@ const auth = getAuth(app);
  * @param firstName - User's first name.
  * @param lastName - User's last name.
  * @param role - User's selected role.
- * @returns The user credential.
+ * @param initialQ2Answer - Answer from the initial onboarding Q2.
+ * @returns The confirmed role string upon successful creation, or throws error.
  */
-export const signUpWithEmail = async (email: string, password: string, firstName: string, lastName: string, role: 'investor' | 'lender') => {
+export const signUpWithEmail = async (
+    email: string, 
+    password: string, 
+    firstName: string, 
+    lastName: string, 
+    role: UserProfile['role'], // Use expanded role type from UserProfile
+    initialQ2Answer?: string // Optional Q2 answer
+): Promise<UserProfile['role']> => {
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
@@ -38,10 +44,10 @@ export const signUpWithEmail = async (email: string, password: string, firstName
     console.log("Auth profile displayName updated.");
 
     // Create Firestore profile document
-    await createUserProfileDocument(user, { role });
+    await createUserProfileDocument(user, { role, initialQ2Answer });
     
     console.log("User signed up & profile creation initiated for:", user.uid);
-    return userCredential;
+    return role;
   } catch (error) {
     console.error("Error signing up:", error);
     throw error; // Re-throw error to be caught by the calling component

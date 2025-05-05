@@ -7,18 +7,21 @@ import IconWrapper from '../atoms/IconWrapper';
 // Register ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger);
 
+// Define structure locally or import
 interface ValueItem {
   icon: React.ReactNode;
   title: string;
   description: string;
 }
 
-const ValueProposition: React.FC = () => {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const cardsRef = useRef<HTMLDivElement>(null);
-  
-  const values: ValueItem[] = [
+// Update props interface
+interface ValuePropositionProps {
+    title?: string; // Optional title override
+    propositions?: ValueItem[]; // Optional items override
+}
+
+// Default propositions (internal fallback)
+const defaultPropositions: ValueItem[] = [
     {
       icon: <IconWrapper name="FiUsers" size={40} className="text-accent" />,
       title: "Personalized Matchmaking",
@@ -34,76 +37,89 @@ const ValueProposition: React.FC = () => {
       title: "Vetted Network",
       description: "Access our network of trusted lenders and investors who have been thoroughly vetted."
     }
-  ];
+];
+
+// Default title (internal fallback)
+const defaultTitle = "Why Choose <span class=\'text-accent\'>Domentra</span>";
+
+const ValueProposition: React.FC<ValuePropositionProps> = ({ title: personalizedTitle, propositions: personalizedPropositions }) => {
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const cardsRef = useRef<HTMLDivElement>(null);
+  
+  // Use personalized props or fall back to defaults
+  const currentTitle = personalizedTitle || defaultTitle;
+  const currentPropositions = personalizedPropositions && personalizedPropositions.length > 0 
+      ? personalizedPropositions 
+      : defaultPropositions;
   
   useEffect(() => {
-    // Title animation
-    if (titleRef.current) {
-      gsap.from(titleRef.current, {
-        opacity: 0,
-        y: 50,
-        duration: 1,
-        scrollTrigger: {
-          trigger: titleRef.current,
-          start: "top 80%",
-          toggleActions: "play none none none"
-        }
-      });
-    }
-    
-    // Cards animation
-    if (cardsRef.current && cardsRef.current.children.length > 0) {
-      const cards = Array.from(cardsRef.current.children);
-      
-      cards.forEach((card, index) => {
-        const direction = index % 2 === 0 ? -100 : 100;
-        
-        gsap.from(card, {
-          opacity: 0,
-          x: direction,
-          duration: 0.8,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: card,
-            start: "top 80%",
-            toggleActions: "play none none none"
-          }
-        });
-      });
-    }
-    
+      const sectionEl = sectionRef.current;
+      const titleEl = titleRef.current;
+      const cardsContainer = cardsRef.current;
+
+      if (!sectionEl || !titleEl || !cardsContainer) return;
+
+      const cards = gsap.utils.toArray<HTMLElement>(cardsContainer.children);
+
+      const ctx = gsap.context(() => {
+            // Animate Title
+            gsap.from(titleEl, {
+                opacity: 0,
+                y: 30,
+                duration: 0.8,
+                ease: 'power3.out',
+                scrollTrigger: {
+                    trigger: sectionEl, // Trigger based on section
+                    start: "top 85%",
+                }
+            });
+
+            // Stagger Cards Animation
+            if (cards.length > 0) {
+                 gsap.from(cards, {
+                    opacity: 0,
+                    y: 50,
+                    scale: 0.95,
+                    duration: 0.6,
+                    stagger: 0.15,
+                    ease: "power2.out",
+                    scrollTrigger: {
+                        trigger: cardsContainer,
+                        start: "top 85%",
+                    }
+                 });
+            }
+        }, sectionRef);
+
     return () => {
-      // Clean up ScrollTrigger
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+      ctx.revert();
     };
-  }, []);
+  }, [currentTitle, currentPropositions]); // Re-run if props change
   
   return (
-    <section ref={sectionRef} className="py-20 bg-white">
-      <div className="container">
+    <section ref={sectionRef} className="py-20 md:py-28 bg-white dark:bg-gray-800 opacity-100">
+      <div className="container mx-auto px-4">
         <h2 
           ref={titleRef}
-          className="text-3xl md:text-4xl font-bold text-center mb-12 text-primary"
-        >
-          Why Choose <span className="text-accent">Domentra</span>
-        </h2>
+          className="text-3xl md:text-4xl font-bold text-center mb-16 text-primary dark:text-white"
+          dangerouslySetInnerHTML={{ __html: currentTitle }}
+        />
         
         <div 
           ref={cardsRef}
           className="grid grid-cols-1 md:grid-cols-3 gap-8"
         >
-          {values.map((value, index) => (
+          {currentPropositions.map((value, index) => (
             <div 
               key={index}
-              className="bg-white rounded-lg shadow-lg p-8 transform transition-transform duration-300 hover:scale-105"
+              className="value-card bg-gray-50 dark:bg-gray-700 rounded-lg shadow-lg p-8 text-center transform transition-transform duration-300 hover:scale-105 border border-gray-100 dark:border-gray-600"
             >
-              <div className="flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-6 mx-auto">
+              <div className="inline-block p-4 rounded-full bg-accent/10 dark:bg-accent/20 mb-6">
                 {value.icon}
               </div>
-              
-              <h3 className="text-xl font-bold text-center mb-4">{value.title}</h3>
-              
-              <p className="text-gray-600 text-center">{value.description}</p>
+              <h3 className="text-xl font-semibold text-primary dark:text-white mb-3">{value.title}</h3>
+              <p className="text-primary/80 dark:text-gray-300">{value.description}</p>
             </div>
           ))}
         </div>
